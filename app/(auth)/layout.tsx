@@ -28,8 +28,8 @@ export default function RootLayout({
           <meta property="og:title" content={metadata.title} />
           <meta property="og:description" content={metadata.description} />
           <meta property="og:image" content={metadata.image} />
-          <meta property="og:image:width" content="300" />
-          <meta property="og:image:height" content="300" />
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="600" />
           <meta property="og:url" content="https://www.abibookclub.com/" />
           {/* You can add more OG tags as needed */}
           {/* Twitter Card Meta Tags */}
