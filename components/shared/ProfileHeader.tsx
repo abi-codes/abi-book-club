@@ -24,6 +24,7 @@ import EditProfileModal from "../custom-ui/EditProfileModal";
 import AddressModal from "../custom-ui/AddressModal";
 import { useContext, useState } from "react";
 import MyThemeContext from "@/store/ThemeContext";
+import { followUser, unfollowUser } from "@/lib/actions/user.actions";
 
 interface Props {
   accountId: string;
@@ -50,6 +51,7 @@ interface Props {
   ];
   occupation?: string;
   isMember?: boolean;
+  isFollowing?: boolean;
   isRequester?: boolean;
   isOwner?: boolean;
   type?: "User" | "Community";
@@ -66,6 +68,7 @@ const ProfileHeader = ({
   bio,
   occupation,
   isMember,
+  isFollowing,
   isRequester,
   isOwner,
   type,
@@ -74,6 +77,14 @@ const ProfileHeader = ({
 
   const joinCommunity = async () => {
     await memberRequestToCommunity(accountId, authUserId, pathName);
+  };
+
+  const follow = async () => {
+    await followUser(authUserId, accountId, pathName);
+  };
+
+  const unfollow = async () => {
+    await unfollowUser(authUserId, accountId, pathName);
   };
 
   const leaveCommunity = async () => {
@@ -160,6 +171,30 @@ const ProfileHeader = ({
                 </p>
               </div>
             )}
+          </div>
+        )}
+
+        {!isOwner && !isFollowing && (
+          <div>
+            <Button
+              onClick={() => follow()}
+              size="sm"
+              className="community-card_btn"
+            >
+              Follow
+            </Button>
+          </div>
+        )}
+
+        {!isOwner && isFollowing && (
+          <div>
+            <Button
+              onClick={() => unfollow()}
+              size="sm"
+              className="community-card_btn"
+            >
+              Unfollow
+            </Button>
           </div>
         )}
 

@@ -1,8 +1,5 @@
-import UserCard from "@/components/cards/UserCard";
 import UserSearch from "@/components/custom-ui/UserSearch";
-import PostJournal from "@/components/forms/PostJournal";
-import ProfileHeader from "@/components/shared/ProfileHeader";
-import { fetchUser, fetchUsers } from "@/lib/actions/user.actions";
+import { fetchUser } from "@/lib/actions/user.actions";
 import { currentUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 

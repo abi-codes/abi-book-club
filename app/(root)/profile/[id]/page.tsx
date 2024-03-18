@@ -9,6 +9,7 @@ import Image from "next/image";
 import EntriesTab from "@/components/shared/EntriesTab";
 
 import Bookshelf from "@/components/shared/Bookshelf";
+import UserCard from "@/components/cards/UserCard";
 
 async function Page({ params }: { params: { id: string } }) {
   const user = await currentUser();
@@ -19,6 +20,12 @@ async function Page({ params }: { params: { id: string } }) {
   if (!userInfo?.onboarded) redirect("/onboarding");
 
   const isOwner = user.id === userInfo.id;
+
+  const followerCheck = userInfo.followers?.find(
+    (follower: any) => follower.id === user.id
+  );
+
+  const isFollowing = followerCheck ? true : false;
 
   return (
     <section>
@@ -32,6 +39,7 @@ async function Page({ params }: { params: { id: string } }) {
         bio={userInfo.bio}
         occupation={userInfo.occupation}
         isOwner={isOwner}
+        isFollowing={isFollowing}
         address={JSON.parse(JSON.stringify(userInfo.address))}
       />
 
@@ -61,8 +69,61 @@ async function Page({ params }: { params: { id: string } }) {
                     {userInfo?.threads?.length}
                   </p>
                 )}
+
+                {tab.label === "Followers" && !isOwner && (
+                  <p className="ml-1 rounded-md bg-light-4 px-2 py-1 !text-tiny-medium text-light-2">
+                    {userInfo?.followers?.length}
+                  </p>
+                )}
+
+                {tab.label === "Following" && isOwner && (
+                  <p className="ml-1 rounded-md bg-light-4 px-2 py-1 !text-tiny-medium text-light-2">
+                    {userInfo?.following?.length}
+                  </p>
+                )}
               </TabsTrigger>
             ))}
+            {!isOwner && (
+              <TabsTrigger
+                key={"followers"}
+                value={"followers"}
+                className="tab"
+              >
+                <Image
+                  src={"/assets/followers.svg"}
+                  alt={"Followers"}
+                  width={24}
+                  height={24}
+                  className="object-contain"
+                />
+
+                <p className="max-sm:hidden">{"Followers"}</p>
+                <p className="ml-1 rounded-md bg-light-4 px-2 py-1 !text-tiny-medium text-light-2">
+                  {userInfo?.followers?.length}
+                </p>
+              </TabsTrigger>
+            )}
+
+            {isOwner && (
+              <TabsTrigger
+                key={"following"}
+                value={"following"}
+                className="tab"
+              >
+                <Image
+                  src={"/assets/followers.svg"}
+                  alt={"Following"}
+                  width={24}
+                  height={24}
+                  className="object-contain"
+                />
+
+                <p className="max-sm:hidden">{"Following"}</p>
+                <p className="ml-1 rounded-md bg-light-4 px-2 py-1 !text-tiny-medium text-light-2">
+                  {userInfo?.following?.length}
+                </p>
+              </TabsTrigger>
+            )}
           </TabsList>
 
           <TabsContent
@@ -78,7 +139,7 @@ async function Page({ params }: { params: { id: string } }) {
           </TabsContent>
 
           <TabsContent
-            key={`content-enties`}
+            key={`content-entries`}
             value="entries"
             className="w-full text-light-1"
           >
@@ -87,6 +148,39 @@ async function Page({ params }: { params: { id: string } }) {
               accountId={userInfo.id}
               accountType="User"
             />
+          </TabsContent>
+
+          <TabsContent
+            key={`content-followers`}
+            value="followers"
+            className="w-full text-light-1"
+          >
+            {userInfo?.followers?.map((follower: any) => (
+              <UserCard
+                key={follower.id}
+                id={follower.id}
+                name={follower.name}
+                username={follower.username}
+                imgUrl={follower.image}
+                personType="User"
+              />
+            ))}
+          </TabsContent>
+          <TabsContent
+            key={`content-following`}
+            value="following"
+            className="w-full text-light-1"
+          >
+            {userInfo?.following?.map((follower: any) => (
+              <UserCard
+                key={follower.id}
+                id={follower.id}
+                name={follower.name}
+                username={follower.username}
+                imgUrl={follower.image}
+                personType="User"
+              />
+            ))}
           </TabsContent>
         </Tabs>
       </div>
