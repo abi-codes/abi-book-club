@@ -20,15 +20,7 @@ async function Page() {
   // fetch organization list created by user
   const userInfo = await fetchUser(user.id);
 
-  if (!userInfo?.onboarded) redirect("/onboarding");
-
-  const communityInfo = {
-    id: "",
-    username: "",
-    name: "",
-    image: "",
-    bio: "",
-  };
+  if (!userInfo?.user.onboarded) redirect("/onboarding");
 
   // Fetch communities
   const result = await fetchCommunities({
@@ -38,7 +30,7 @@ async function Page() {
   });
 
   const activeCommunities = result.communities.filter(
-    (c) => c.status === "active"
+    (c) => c?.status === "active"
   );
 
   return (
@@ -57,7 +49,6 @@ async function Page() {
         {/* Search Bar*/}
 
         {/* Dialog for community form */}
-
         <DialogContent className="content-center sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Add book club</DialogTitle>
@@ -65,7 +56,16 @@ async function Page() {
               Add your book club. Click save when you're done.
             </DialogDescription>
           </DialogHeader>
-          <Community community={communityInfo} userId={userInfo.id} />
+          <Community
+            community={{
+              id: "",
+              username: "",
+              name: "",
+              image: "",
+              bio: "",
+              ownerUserId: userInfo.user.id,
+            }}
+          />
         </DialogContent>
       </Dialog>
 
@@ -76,13 +76,8 @@ async function Page() {
           <>
             {activeCommunities.map((community) => (
               <CommunityCard
-                key={community.id}
-                id={community.id}
-                name={community.name}
-                username={community.username}
-                imgUrl={community.image}
-                bio={community.bio}
-                members={JSON.parse(JSON.stringify(community.members))}
+                community={JSON.parse(JSON.stringify(community))}
+                key={community?.id}
               />
             ))}
           </>

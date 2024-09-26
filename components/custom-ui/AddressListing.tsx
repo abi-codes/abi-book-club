@@ -3,22 +3,10 @@ import Image from "next/image";
 import MyThemeContext from "@/store/ThemeContext";
 import { usePathname } from "next/navigation";
 import { removeUserAddress } from "@/lib/actions/user.actions";
+import { IAddress } from "@/lib/types/address";
 
 interface Props {
-  address: [
-    {
-      _id?: string;
-      id?: string;
-      streetLine1: string;
-      streetLine2: string;
-      city: string;
-      province: string;
-      postalCode: string;
-      country: string;
-      countryCode: string;
-      isPrimary: boolean;
-    },
-  ];
+  address: IAddress[];
   userId: string;
   editAddress: (address: any) => void;
   addAddress: () => void;
@@ -37,22 +25,34 @@ const AddressListing = ({
     await removeUserAddress(address._id, userId, path);
   };
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-wrap gap-2">
       {address.map((address, index) => (
         <div
           key={index}
           className="flex
+          relative
+          shadow-sm
+          overflow-hidden
           cursor-pointer  
           justify-between 
           items-center 
-          border-gray-500 
-          hover:bg-slate-400
-          border-2 rounded-lg  dark:text-white
+          border
+          border-purple-300
+          rounded-lg  dark:text-white
+          p-2
           group"
         >
+          <div className="absolute flex shadow-md items-center top-4 -right-4 bg-purple-300 h-4 w-20 z-50 m-auto rotate-45">
+            <p className="text-white text-subtle-medium  text-center w-full">
+              Default
+            </p>
+          </div>
           <div className="p-2" onClick={() => editAddress(address)}>
-            <h3>Home</h3>
-            <p>
+            <div className="flex items-center gap-2">
+              <img src="/assets/home.svg" alt="home" />
+              <h3 className="text-heading4-medium ">Home</h3>
+            </div>
+            <p className="w-60">
               {address.streetLine1} {address.streetLine2}, {address.city},{" "}
               {address.province}, {address.postalCode}, {address.country}
             </p>
@@ -74,12 +74,12 @@ const AddressListing = ({
         </div>
       ))}
 
-      <p
+      {/* <p
         onClick={() => addAddress()}
         className="text-center text-small-regular text-blue cursor-pointer  hover:underline"
       >
         Add address
-      </p>
+      </p> */}
     </div>
   );
 };

@@ -9,6 +9,16 @@ import User from "../models/user.model";
 import { connectToDB } from "../mongoose";
 import { revalidatePath } from "next/cache";
 import Like from "../models/like.model";
+import BomQueue from "../models/bomQueue.model";
+import BookSession from "../models/bookSession.model";
+import { updateOrCreateBook } from "./book.actions";
+import Book from "../models/book.model";
+import BookReview from "../models/bookReview.model";
+import { ICommunity } from "../types/community";
+import { IClubUser } from "../types/user";
+import { IBomQueue } from "../types/bomQueue";
+import Bom from "../models/bom.model";
+import { IBom } from "../types/bom";
 
 export async function createCommunity(
   name: string,
@@ -59,6 +69,347 @@ export async function createCommunity(
   }
 }
 
+export async function fetchCommunitiesByUserId({
+  userId,
+  pageNumber = 1,
+  pageSize = 3,
+  sortBy = "desc",
+}: {
+  userId: string;
+  pageNumber?: number;
+  pageSize?: number;
+  sortBy?: SortOrder;
+}) {
+  try {
+    connectToDB();
+
+    const skipAmount = (pageNumber - 1) * pageSize;
+
+    const sortOptions = { createdDate: sortBy };
+
+    const query: FilterQuery<typeof Community> = {
+      createdBy: { $eq: userId }, // Exclude the current user from the results.
+      memebers: { $neq: userId },
+    };
+
+    const communityQueryResponse = await Community.find(query)
+      .sort(sortOptions)
+      .skip(skipAmount)
+      .limit(pageSize)
+      .populate({
+        path: "members",
+        model: User,
+        select: "name image _id id",
+      });
+    // .populate("requests");
+
+    const totalCommunityItemsCount = await Community.countDocuments(query);
+
+    const totalPages = Math.ceil(totalCommunityItemsCount / pageSize);
+    const isNext = pageNumber < totalPages;
+
+    const returnResponse = <ICommunity[]>communityQueryResponse;
+
+    return {
+      communities: JSON.parse(JSON.stringify(returnResponse)),
+      communitiesPageSize: pageSize,
+      communitiesHasNext: isNext,
+      communitiesTotalPages: totalPages,
+      communitiesCurrentPage: pageNumber,
+    };
+  } catch (error) {
+    console.error("Error fetching user communities:", error);
+    throw error;
+  }
+}
+
+export async function fetchMembersDetailsByUserId({
+  userId,
+  pageNumber = 1,
+  pageSize = 3,
+  sortBy = "desc",
+}: {
+  userId: string;
+  pageNumber?: number;
+  pageSize?: number;
+  sortBy?: SortOrder;
+}) {
+  try {
+    connectToDB();
+
+    const skipAmount = (pageNumber - 1) * pageSize;
+
+    const sortOptions = { createdDate: sortBy };
+
+    const query: FilterQuery<typeof Community> = {
+      createdBy: { $eq: userId }, // Exclude the current user from the results.
+    };
+
+    const communityQueryResponse = await Community.find(query)
+      .sort(sortOptions)
+      .skip(skipAmount)
+      .limit(pageSize)
+      .populate({
+        path: "requests",
+        model: User,
+        select: "name surname username bio image _id id",
+      })
+      .populate({
+        path: "members",
+        model: User,
+        select: "name surname username bio image _id id",
+      });
+    // .populate("requests");
+    const communities = <ICommunity[]>communityQueryResponse;
+
+    const returnResponse = <IClubUser[]>communities
+      .map((c) => {
+        const requests = c?.requests.map((user: any) => ({
+          ...user._doc,
+          _clubId: c._id,
+          clubId: c.id,
+          clubName: c.name,
+          clubImage: c.image,
+          type: "request",
+        }));
+        const members = c?.members
+          .filter((user: any) => user._id != userId)
+          .map((user: any) => ({
+            ...user._doc,
+            _clubId: c._id,
+            clubId: c.id,
+            clubName: c.name,
+            clubImage: c.image,
+            type: "member",
+          }));
+        return requests?.concat(members);
+      })
+      .flat();
+
+    const totalCommunityItemsCount = await Community.countDocuments(query);
+
+    const totalPages = Math.ceil(returnResponse.length / pageSize);
+    const isNext = pageNumber < totalPages;
+
+    return {
+      users: JSON.parse(JSON.stringify(returnResponse)),
+      communitiesPageSize: pageSize,
+      communitiesHasNext: isNext,
+      communitiesTotalPages: totalPages,
+      communitiesCurrentPage: pageNumber,
+    };
+  } catch (error) {
+    console.error("Error fetching user communities:", error);
+    throw error;
+  }
+}
+
+export async function fetchQueueDetailsByUserId({
+  userId,
+  filters = [],
+  pageNumber = 1,
+  pageSize = 1,
+  sortBy = "desc",
+}: {
+  userId: string;
+  filters?: string[];
+  pageNumber?: number;
+  pageSize?: number;
+  sortBy?: SortOrder;
+}) {
+  try {
+    connectToDB();
+
+    const skipAmount = (pageNumber - 1) * pageSize;
+
+    const sortOptions = { createdDate: sortBy };
+
+    const communityQuery: FilterQuery<typeof Community> = {
+      createdBy: { $eq: userId }, // Exclude the current user from the results.
+    };
+
+    const communityQueryResponse = await Community.find(communityQuery);
+
+    const query: FilterQuery<typeof BomQueue> = {
+      communityId: {
+        $in: communityQueryResponse.map((c) => {
+          return c._id;
+        }),
+      }, // Exclude the current user from the results.
+    };
+
+    //seperate the club filter from the status filter
+    if (filters && filters.length > 0) {
+      const clubFilter = filters.filter((f) => f.includes("club"));
+      const statusFilter = filters.filter((f) => f.includes("status"));
+
+      if (clubFilter.length > 0) {
+        query.communityId = { $in: clubFilter.map((c) => c.split("|")[1]) };
+      }
+
+      if (statusFilter.length > 0) {
+        query.status = {
+          $in: statusFilter.map((c) => c.split("|")[1]),
+        };
+      }
+    }
+
+    const queueQueryResponse = await BomQueue.find(query)
+      .sort(sortOptions)
+      .skip(skipAmount)
+      .limit(pageSize)
+      .populate([
+        {
+          path: "bookSessions",
+          model: BookSession,
+          populate: [
+            {
+              path: "bookId",
+              model: Book,
+            },
+            // {
+            //   path: "votes",
+            //   model: User,
+            // },
+          ],
+        },
+        {
+          path: "communityId",
+          model: Community,
+        },
+      ]);
+
+    const communitiesResponse = <ICommunity[]>communityQueryResponse;
+    const returnResponse = <IBomQueue[]>queueQueryResponse
+      .map((q) => {
+        return {
+          ...q._doc,
+        };
+      })
+      .flat();
+
+    const totalQueryItemsCount = await BomQueue.countDocuments(query);
+
+    const totalPages = Math.ceil(totalQueryItemsCount / pageSize);
+    const isNext = pageNumber < totalPages;
+
+    return {
+      communities: JSON.parse(JSON.stringify(communitiesResponse)),
+      queues: JSON.parse(JSON.stringify(returnResponse)),
+      queuesPageSize: pageSize,
+      queuesHasNext: isNext,
+      queuesTotalPages: totalPages,
+      queuesCurrentPage: pageNumber,
+    };
+  } catch (error) {
+    console.error("Error fetching user community queues:", error);
+    throw error;
+  }
+}
+
+export async function fetchBoMDetailsByUserId({
+  userId,
+  filters = [],
+  pageNumber = 1,
+  pageSize = 1,
+  sortBy = "desc",
+}: {
+  userId: string;
+  filters?: string[];
+  pageNumber?: number;
+  pageSize?: number;
+  sortBy?: SortOrder;
+}) {
+  try {
+    connectToDB();
+
+    const skipAmount = (pageNumber - 1) * pageSize;
+
+    const sortOptions = { createdDate: sortBy };
+
+    const communityQuery: FilterQuery<typeof Community> = {
+      createdBy: { $eq: userId }, // Exclude the current user from the results.
+    };
+
+    const communityQueryResponse = await Community.find(communityQuery);
+
+    const query: FilterQuery<typeof Bom> = {
+      community: {
+        $in: communityQueryResponse.map((c) => {
+          return c._id;
+        }),
+      }, // Exclude the current user from the results.
+    };
+
+    //seperate the club filter from the status filter
+    if (filters && filters.length > 0) {
+      const clubFilter = filters.filter((f) => f.includes("club"));
+      const statusFilter = filters.filter((f) => f.includes("status"));
+
+      if (clubFilter.length > 0) {
+        query.community = { $in: clubFilter.map((c) => c.split("|")[1]) };
+      }
+
+      if (statusFilter.length > 0) {
+        query.status = {
+          $in: statusFilter.map((c) => c.split("|")[1]),
+        };
+      }
+    }
+
+    const queueQueryResponse = await Bom.find(query)
+      .sort(sortOptions)
+      .skip(skipAmount)
+      .limit(pageSize)
+      .populate([
+        {
+          path: "bookSession",
+          model: BookSession,
+          populate: [
+            {
+              path: "bookId",
+              model: Book,
+            },
+            {
+              path: "votes",
+              model: User,
+            },
+          ],
+        },
+        {
+          path: "community",
+          model: Community,
+        },
+      ]);
+
+    const communitiesResponse = <ICommunity[]>communityQueryResponse;
+    const returnResponse = <IBom[]>queueQueryResponse
+      .map((q) => {
+        return {
+          ...q._doc,
+        };
+      })
+      .flat();
+
+    const totalQueryItemsCount = await Bom.countDocuments(query);
+
+    const totalPages = Math.ceil(totalQueryItemsCount / pageSize);
+    const isNext = pageNumber < totalPages;
+
+    return {
+      communities: JSON.parse(JSON.stringify(communitiesResponse)),
+      boms: JSON.parse(JSON.stringify(returnResponse)),
+      bomsPageSize: pageSize,
+      bomsHasNext: isNext,
+      bomsTotalPages: totalPages,
+      bomsCurrentPage: pageNumber,
+    };
+  } catch (error) {
+    console.error("Error fetching user community queues:", error);
+    throw error;
+  }
+}
+
 export async function fetchCommunityDetails(id: string) {
   try {
     connectToDB();
@@ -75,7 +426,38 @@ export async function fetchCommunityDetails(id: string) {
         model: User,
         select: "name username image _id id",
       },
+      {
+        path: "queues",
+        model: BomQueue,
+        populate: [
+          {
+            path: "bookSessions",
+            model: BookSession,
+            populate: [
+              {
+                path: "bookId",
+                model: Book,
+              },
+              {
+                path: "votes",
+                model: User,
+              },
+            ],
+          },
+        ],
+      },
     ]);
+
+    if (communityDetails && communityDetails.queues) {
+      for (const book of communityDetails.queues) {
+        for (const session of book.bookSessions) {
+          const reviews: any[] = await BookReview.find({
+            bookId: session.bookId._id,
+          });
+          session.bookId.reviews = reviews;
+        }
+      }
+    }
 
     return communityDetails;
   } catch (error) {
@@ -91,6 +473,7 @@ export async function fetchCommunityPosts(id: string) {
 
     const communityPosts = await Community.findById({ _id: id }).populate({
       path: "threads",
+      options: { sort: { createdAt: "desc" } },
       model: Entry,
       populate: [
         {
@@ -123,11 +506,13 @@ export async function fetchCommunityPosts(id: string) {
 }
 
 export async function fetchCommunities({
+  userId = "",
   searchString = "",
   pageNumber = 1,
   pageSize = 20,
   sortBy = "desc",
 }: {
+  userId?: string;
   searchString?: string;
   pageNumber?: number;
   pageSize?: number;
@@ -143,7 +528,9 @@ export async function fetchCommunities({
     const regex = new RegExp(searchString, "i");
 
     // Create an initial query object to filter communities.
-    const query: FilterQuery<typeof Community> = {};
+    const query: FilterQuery<typeof Community> = {
+      createdBy: { $ne: userId }, // Exclude the current user from the results.
+    };
 
     // If the search string is not empty, add the $or operator to match either username or name fields.
     if (searchString.trim() !== "") {
@@ -168,8 +555,9 @@ export async function fetchCommunities({
     // Count the total number of communities that match the search criteria (without pagination).
     const totalCommunitiesCount = await Community.countDocuments(query);
 
-    const communities = await communitiesQuery.exec();
+    const response = await communitiesQuery.exec();
 
+    const communities: ICommunity[] = <ICommunity[]>response;
     // Check if there are more communities beyond the current page.
     const isNext = totalCommunitiesCount > skipAmount + communities.length;
 
@@ -318,7 +706,7 @@ export async function declineRequestCommunity(
 export async function removeUserFromCommunity(
   userId: string,
   communityId: string,
-  pathName: string
+  pathName?: string
 ) {
   try {
     connectToDB();
@@ -349,7 +737,7 @@ export async function removeUserFromCommunity(
       { $pull: { communities: communityIdObject._id } }
     );
 
-    revalidatePath(pathName);
+    if (pathName) revalidatePath(pathName);
   } catch (error) {
     // Handle any errors
     console.error("Error removing user from community:", error);
@@ -448,5 +836,241 @@ export async function findDuplicateCommunityByUsername(
     return communityDuplicate || userDuplicate;
   } catch (error: any) {
     throw new Error(`Failed to fetch user: ${error.message}`);
+  }
+}
+
+//Write a function to a book queue to a community
+export async function addBookQueueToCommunity(
+  communityId: string,
+  bookQueue: any,
+  startDate: Date,
+  endDate: Date,
+  path: string
+) {
+  try {
+    connectToDB();
+
+    // Find the community by its unique id
+    const community = await Community.findOne({ _id: communityId });
+
+    if (!community) {
+      throw new Error("Community not found");
+    }
+
+    const newBookQueue = new BomQueue({
+      communityId: community._id,
+      startDate: startDate,
+      endDate: endDate,
+      bookSessions: [],
+    });
+
+    //Save the book sessions
+    for (var item of bookQueue) {
+      //Handle fetch or create book
+      const book = await updateOrCreateBook(item);
+
+      const newBookSession = new BookSession({
+        bookId: book._id,
+        communityId: community._id,
+        startDate: startDate,
+        endDate: endDate,
+        votes: [],
+      });
+
+      const sessionResponse = await newBookSession.save();
+
+      newBookQueue.bookSessions.push(sessionResponse);
+    }
+
+    // Add the book queue to the community
+    await newBookQueue.save();
+
+    community.queues.push(newBookQueue._id);
+
+    await community.save();
+
+    revalidatePath(path);
+
+    // return newBookQueue;
+  } catch (error) {
+    // Handle any errors
+    console.error("Error adding book queue to community:", error);
+    throw error;
+  }
+}
+
+export async function updateBookInQueue(
+  queueId: string,
+  previousBooksessionId: any,
+  book: any
+) {
+  try {
+    connectToDB();
+
+    // Find the queue by its unique id
+    const queue = await BomQueue.findOne({ id: queueId });
+
+    if (!queue) {
+      throw new Error("Queue not found");
+    }
+
+    //Replace the booksession with the new one in the same index of the array
+
+    // Find the book by its unique id
+    const bookResponse = await updateOrCreateBook(book);
+
+    const newBookSession = new BookSession({
+      bookId: bookResponse._id,
+      communityId: queue.communityId,
+      startDate: queue.startDate,
+      endDate: queue.endDate,
+      votes: [],
+    });
+
+    const sessionResponse = await newBookSession.save();
+
+    const bookSessionIndex = queue.bookSessions.indexOf(previousBooksessionId);
+
+    queue.bookSessions[bookSessionIndex] = sessionResponse._id;
+
+    // Save the updated queue
+    await queue.save();
+
+    // return queue;
+  } catch (error) {
+    // Handle any errors
+    console.error("Error updating book in queue:", error);
+    throw error;
+  }
+}
+
+export async function updateQueueSchedule(
+  queueId: string,
+  startDate: Date,
+  endDate: Date
+) {
+  try {
+    connectToDB();
+
+    // Find the queue by its unique id
+    const queue = await BomQueue.findOne({ id: queueId });
+
+    if (!queue) {
+      throw new Error("Queue not found");
+    }
+
+    // Update the queue with the new start and end dates
+    queue.startDate = startDate;
+    queue.endDate = endDate;
+
+    // Save the updated queue
+    await queue.save();
+
+    return queue;
+  } catch (error) {
+    // Handle any errors
+    console.error("Error updating queue schedule:", error);
+    throw error;
+  }
+}
+
+export async function publishBookQueue(
+  queueId: string,
+  userId?: string,
+  publishBlurb?: string
+) {
+  try {
+    connectToDB();
+
+    // Find the queue by its unique id
+    const queue = await BomQueue.findOne({ id: queueId });
+
+    if (!queue) {
+      throw new Error("Queue not found");
+    }
+
+    if (queue.startDate < new Date()) {
+      queue.status = "Voting";
+    } else {
+      queue.status = "Published";
+    }
+
+    // Save the updated queue
+    await queue.save();
+
+    const createEntry = await Entry.create({
+      text: publishBlurb,
+      author: userId,
+      community: queue.communityId,
+      queueId: queue._id,
+    });
+
+    return queue;
+  } catch (error) {
+    // Handle any errors
+    console.error("Error publishing queue:", error);
+    throw error;
+  }
+}
+
+export async function startReadingBookQueue(
+  queueId: string,
+  bookSessionId: string,
+  startDate: Date,
+  endDate: Date
+) {
+  try {
+    connectToDB();
+
+    // Find the queue by its unique id
+    const queue = await BomQueue.findOne({ id: queueId });
+
+    if (!queue) {
+      throw new Error("Queue not found");
+    }
+
+    // Update the queue status to 'completed'
+    queue.status = "Completed";
+
+    //Add the book session as the current book of the month
+    const bom = new Bom({
+      bookSession: bookSessionId,
+      community: queue.communityId,
+      startDate: startDate,
+      endDate: endDate,
+    });
+
+    //Save the new book of the month
+    await bom.save();
+
+    // Save the updated queue
+    await queue.save();
+
+    return queue;
+  } catch (error) {
+    // Handle any errors
+    console.error("Error publishing queue:", error);
+    throw error;
+  }
+}
+
+export async function deleteQueue(queueId: string) {
+  try {
+    connectToDB();
+
+    // Find the queue by its unique id
+    const queue = await BomQueue.findOne({ id: queueId });
+
+    if (!queue) {
+      throw new Error("Queue not found");
+    }
+
+    queue.status = "Cancelled";
+
+    // Delete the queue
+    await queue.save();
+  } catch (error) {
+    // Handle any errors
+    throw error;
   }
 }

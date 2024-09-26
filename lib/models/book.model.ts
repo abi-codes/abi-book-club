@@ -13,10 +13,12 @@ const bookSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
+    index: true,
   },
   subtitle: {
     type: String,
     required: false,
+    index: true,
   },
   description: {
     type: String,
@@ -37,6 +39,13 @@ const bookSchema = new mongoose.Schema({
   cover: {
     type: String,
     required: false,
+  },
+  createdDate: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedDate: {
+    type: Date,
   },
 });
 

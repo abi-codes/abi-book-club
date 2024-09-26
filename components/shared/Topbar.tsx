@@ -36,7 +36,7 @@ function Topbar() {
         <div className="flex items-center gap-1">
           <Switch onClick={toggleThemeHandler} />
           <p className="font-bold text-black dark:text-light-1 max-xl:hidden">
-            Toggle Theme
+            {isDarkTheme ? "Toggle Light Theme" : "Toggle Dark Theme"}
           </p>
         </div>
         <SignedIn>

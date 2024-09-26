@@ -12,12 +12,64 @@ import Address from "../models/address.model";
 import Bookshelf from "../models/bookshelf.model";
 import Book from "../models/book.model";
 import BookReview from "../models/bookReview.model";
+import { IUser } from "../types/user";
+import { IBookshelf } from "../types/bookshelf";
+import BomQueue from "../models/bomQueue.model";
+import BookSession from "../models/bookSession.model";
+
+export async function fetchAllUserDetails(userId: string) {
+  try {
+    connectToDB();
+
+    const response = await User.findOne({ id: userId })
+      .populate({
+        path: "communities",
+        model: Community,
+      })
+      .populate({
+        path: "address",
+        model: Address,
+      })
+      .populate({
+        path: "bookshelf",
+        model: Bookshelf,
+        populate: [
+          {
+            path: "bookId",
+            model: Book,
+          },
+          {
+            path: "bookReviewId",
+            model: BookReview,
+            populate: {
+              path: "createdBy",
+              model: User,
+            },
+          },
+        ],
+      })
+      .populate({
+        path: "following",
+        model: User,
+        select: "name surname username image id",
+      })
+      .populate({
+        path: "followers",
+        model: User,
+        select: "name surname username image id",
+      });
+
+    return <IUser>response;
+  } catch (error: any) {
+    throw new Error(`Failed to fetch user: ${error.message}`);
+  }
+}
 
 export async function fetchUser(userId: string) {
   try {
     connectToDB();
 
-    return await User.findOne({ id: userId })
+    const response = await User.findOne({ id: userId })
       .populate({
         path: "communities",
         model: Community,
@@ -44,6 +96,11 @@ export async function fetchUser(userId: string) {
             },
           },
         ],
+        options: {
+          skip: 0,
+          sort: { createdDate: "desc" },
+          limit: 6,
+        },
       })
       .populate({
         path: "following",
@@ -55,6 +112,11 @@ export async function fetchUser(userId: string) {
         model: User,
         select: "name surname username image id",
       });
+    var returnResponse = <IUser>response;
+
+    return {
+      user: returnResponse,
+    };
   } catch (error: any) {
     throw new Error(`Failed to fetch user: ${error.message}`);
   }
@@ -64,17 +126,19 @@ interface Params {
   userId: string;
   username: string;
   name: string;
-  surname: string | undefined;
+  email: string;
+  surname?: string;
   bio: string;
   image: string;
   path: string;
-  occupation: string | undefined;
+  occupation?: string;
 }
 
 export async function updateUser({
   userId,
   bio,
   name,
+  email,
   path,
   username,
   image,
@@ -89,11 +153,13 @@ export async function updateUser({
       {
         username: username.toLowerCase(),
         name,
+        email,
         bio,
         image,
         occupation,
         surname,
         onboarded: true,
+        status: "active",
       },
       { upsert: true }
     );
@@ -104,6 +170,62 @@ export async function updateUser({
   } catch (error: any) {
     throw new Error(`Failed to create/update user: ${error.message}`);
   }
+}
+
+interface UpdateParams {
+  userId: string;
+  username?: string | null;
+  name?: string | null;
+  surname?: string | null;
+  bio?: string | null;
+  image?: string | null;
+  backgroundImage?: string | null;
+  phoneNumber?: string | null;
+  path?: string | null;
+  occupation?: string | null;
+  visibility?: boolean | null;
+  status?: string | null;
+  onboarded?: boolean | null;
+}
+
+export async function updateUserDetails({
+  userId,
+  bio,
+  name,
+  path,
+  username,
+  image,
+  backgroundImage,
+  phoneNumber,
+  occupation,
+  visibility,
+  surname,
+  status,
+  onboarded,
+}: UpdateParams) {
+  connectToDB();
+
+  const updateObject = {
+    username: username ? username.toLowerCase() : null,
+    name,
+    bio,
+    image,
+    occupation,
+    backgroundImage,
+    phoneNumber,
+    surname,
+    visibility,
+    status,
+    onboarded,
+  };
+
+  const sanitizedUpdate = Object.fromEntries(
+    Object.entries(updateObject).filter(([_, v]) => v != null)
+  );
+
+  await User.findOneAndUpdate({ id: userId }, sanitizedUpdate, {
+    upsert: true,
+  });
 }
 
 export async function removeUserAddress(
@@ -277,14 +399,19 @@ export async function updateUserBookshelf(
       newBookshelfItem.bookId = newBook._id;
       newBookshelfItem.category = bookshelfItem.category;
 
+      const user = await User.findOne({ id: userId });
+      newBookshelfItem.userId = user._id;
+
       await newBookshelfItem.save();
     } else {
       //Create new bookshelf item with the book
       const newBook: any = await updateOrCreateBook(bookshelfItem.book);
 
+      const user = await User.findOne({ id: userId });
       const newBookshelfItem = new Bookshelf({
         ...bookshelfItem,
         bookId: newBook._id,
+        userId: user._id,
       });
 
       if (bookshelfItem.review) {
@@ -298,8 +425,6 @@ export async function updateUserBookshelf(
       }
 
       const response = await newBookshelfItem.save();
-
-      const user = await User.findOne({ id: userId });
 
       user.bookshelf.push(response._id);
 
@@ -319,7 +444,7 @@ export async function fetchUserPosts(userId: string) {
     // Find all threads authored by the user with the given userId
     const threads: any = await User.findOne({ id: userId }).populate({
       path: "threads",
-      options: { sort: { createdAt: -1 } }, // Sort threads by createdAt field in descending order
+      options: { sort: { createdAt: "desc" } }, // Sort threads by createdAt field in descending order
       model: Entry,
       populate: [
         {
@@ -339,6 +464,16 @@ export async function fetchUserPosts(userId: string) {
             model: User,
             select: "name image id", // Select the "name" and "_id" fields from the "User" model
           },
+        },
+        {
+          path: "queueId",
+          model: BomQueue,
+          populate: [
+            {
+              path: "bookSessions",
+              model: BookSession,
+            },
+          ],
         },
       ],
     });
@@ -376,6 +511,73 @@ export async function fetchUserCommunities(userId: string) {
     });
   } catch (error) {
     console.error("Error fetching user communitties:", error);
+    throw error;
+  }
+}
+
+export async function fetchUserBookshelf({
+  userId,
+  searchString = "",
+  categories = [],
+  pageNumber = 1,
+  pageSize = 6,
+  sortBy = "desc",
+}: {
+  userId: string;
+  searchString?: string;
+  categories?: string[];
+  pageNumber?: number;
+  pageSize?: number;
+  sortBy?: SortOrder;
+}) {
+  try {
+    connectToDB();
+
+    const skipAmount = (pageNumber - 1) * pageSize;
+
+    // Create a case-insensitive regular expression for the provided search string.
+    const regex = new RegExp(searchString, "i");
+
+    const sortOptions = { createdDate: sortBy };
+
+    // Create an initial query object to filter users.
+    const query: FilterQuery<typeof Bookshelf> = {
+      userId: { $eq: userId }, // Exclude the current user from the results.
+    };
+    //Do aggrate search on book and authors
+    if (categories && categories.length > 0) {
+      query.category = { $in: categories };
+    }
+
+    // Find all threads authored by the user with the given userId
+    const shelfQueryResponse = await Bookshelf.find(query)
+      .populate({
+        path: "bookId",
+        model: Book,
+      })
+      .populate({
+        path: "bookReviewId",
+        model: BookReview,
+      })
+      .sort(sortOptions)
+      .skip(skipAmount)
+      .limit(pageSize);
+
+    const totalShelfItemsCount = await Bookshelf.countDocuments(query);
+    const totalPages = Math.ceil(totalShelfItemsCount / pageSize);
+    const isNext = pageNumber < totalPages;
+
+    const returnResponse = <IBookshelf[]>shelfQueryResponse;
+
+    return {
+      bookshelf: JSON.parse(JSON.stringify(returnResponse)),
+      bookShelfPageSize: pageSize,
+      bookShelfHasNext: isNext,
+      bookShelfTotalPages: totalPages,
+      bookShelfCurrentPage: pageNumber,
+    };
+  } catch (error) {
+    console.error("Error fetching user bookshelf:", error);
     throw error;
   }
 }

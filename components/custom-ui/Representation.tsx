@@ -24,21 +24,32 @@ const Representation = ({ selectedOption, options, onChange }: Props) => {
         onClick={() => setOpen(!open)}
         className="h-10 px-4 flex flex-row items-center gap-2 rounded-lg bg-gray-100"
       >
-        <div>
-          <Image
-            src={selectedOption?.image}
-            alt="Profile picture"
-            width={20}
-            height={20}
-            className="rounded-full object-cover"
-          />
-        </div>
+        {selectedOption && (
+          <>
+            <div>
+              <Image
+                src={selectedOption?.image}
+                alt="Profile picture"
+                width={20}
+                height={20}
+                className="rounded-full object-cover"
+              />
+            </div>
 
-        <div>
-          <p className="!text-small-regular text-black">
-            {selectedOption?.name}
-          </p>
-        </div>
+            <div>
+              <p className="!text-small-regular text-black">
+                {selectedOption?.name}
+              </p>
+            </div>
+          </>
+        )}
+        {!selectedOption && (
+          <div>
+            <p className="!text-small-regular text-black">
+              Please select a community
+            </p>
+          </div>
+        )}
       </article>
       {open && (
         <div className="absolute mt-0 w-full z-10">
@@ -48,7 +59,8 @@ const Representation = ({ selectedOption, options, onChange }: Props) => {
               onClick={(e: any) => {
                 handleChange(e, item);
               }}
-              className="h-10 px-4 cursor-pointer flex flex-row items-center gap-2 rounded-lg bg-gray-100 hover:bg-red-800"
+              className="h-10 px-4 cursor-pointer flex flex-row items-center 
+              gap-2  bg-gray-100 hover:bg-red-800"
             >
               <div>
                 <Image

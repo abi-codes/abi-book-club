@@ -50,7 +50,7 @@ const EditProfileModal = ({
               src={imgUrl}
               alt="Profile image"
               fill
-              className="rounded-full object-cover shadow-2xl"
+              className="rounded-full object-cover"
             />
           </div>
           <div className="flex-1">
@@ -108,8 +108,8 @@ const EditProfileModal = ({
               name,
               bio,
               image: imgUrl,
+              ownerUserId: authUserId,
             }}
-            userId={authUserId}
           />
         )}
       </DialogContent>

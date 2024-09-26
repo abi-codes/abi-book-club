@@ -1,64 +1,27 @@
-import CommunityCard from "@/components/cards/CommunityCard";
+import Entries from "@/components/sections/entries";
 
-import { fetchCommunities } from "@/lib/actions/community.actions";
+import { fetchPosts } from "@/lib/actions/journal.actions";
+import { fetchUser } from "@/lib/actions/user.actions";
+import { currentUser } from "@clerk/nextjs";
+import { Suspense } from "react";
 
 async function Page() {
-  // Fetch communities
-  const result = await fetchCommunities({
-    searchString: "",
-    pageNumber: 1,
-    pageSize: 25,
-  });
+  const result = await fetchPosts(1, 5);
 
-  const activeCommunities = result.communities.filter(
-    (c) => c.status === "active"
-  );
+  const user = await currentUser();
+
+  let userInfo: any = null;
+
+  if (user) userInfo = await fetchUser(user?.id);
 
   return (
     <section>
-      <div className="flex justify-between align-middle">
-        <div className="flex-col">
-          <h1 className="head-text text-black dark:text-white leading-none">
-            Find Your Book Club
-          </h1>
-          <h1 className="head-text cursive">Community</h1>
-          <img
-            src="\assets\underline.png"
-            alt="Text Underline"
-            width="150px"
-            height="10px"
-            className="underline"
-          ></img>
-          <p className="mt-7 text-black dark:text-white">
-            Hop into a book club and access curated content by your favorite
-            creators. Heck, you could even create your own!
-          </p>
-        </div>
-        <div className="flex items-center"></div>
-      </div>
-      {/* Search Bar*/}
-
-      {/* Dialog for community form */}
-
-      <div className="mt-9 flex flex-wrap gap-4">
-        {activeCommunities.length === 0 ? (
-          <p className="no-result">No Clubs</p>
-        ) : (
-          <>
-            {activeCommunities.map((community) => (
-              <CommunityCard
-                key={community.id}
-                id={community.id}
-                name={community.name}
-                username={community.username}
-                imgUrl={community.image}
-                bio={community.bio}
-                members={JSON.parse(JSON.stringify(community.members))}
-              />
-            ))}
-          </>
-        )}
-      </div>
+      <Suspense fallback={<div>Loading journal entries...</div>}>
+        <Entries
+          initialPosts={result.posts}
+          userId={userInfo?.user?._id.toString() || ""}
+        />
+      </Suspense>
     </section>
   );
 }

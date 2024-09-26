@@ -1,12 +1,11 @@
 import mongoose from "mongoose";
-const { randomUUID } = require("crypto");
+
+const uuid = require("uuid");
 
 const communitySchema = new mongoose.Schema({
   id: {
-    type: mongoose.Schema.Types.UUID,
-    default: () => randomUUID(),
-    unique: true,
-    required: true,
+    type: String,
+    default: () => uuid.v4().toString(),
   },
   username: {
     type: String,
@@ -42,6 +41,19 @@ const communitySchema = new mongoose.Schema({
       ref: "User",
     },
   ],
+  queues: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "BookQueue",
+    },
+  ],
+  createdDate: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedDate: {
+    type: Date,
+  },
 });
 
 const Community =

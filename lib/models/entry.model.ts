@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
+const uuid = require("uuid");
 
 const entrySchema = new mongoose.Schema({
+  id: {
+    type: String,
+    default: () => uuid.v4().toString(),
+  },
   text: {
     type: String,
     required: true,
@@ -17,6 +22,14 @@ const entrySchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now,
+  },
+  queueId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "BomQueue",
+  },
+  bookId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Book",
   },
   parentId: {
     type: String,

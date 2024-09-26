@@ -16,6 +16,7 @@ const EntriesTab = async ({ currentUserId, accountId, accountType }: Props) => {
   let result: any;
   if (accountType === "Community") {
     result = await fetchCommunityPosts(accountId);
+    console.log("Community posts", result);
   } else {
     result = await fetchUserPosts(accountId);
   }
@@ -39,12 +40,12 @@ const EntriesTab = async ({ currentUserId, accountId, accountType }: Props) => {
                 accountType === "User"
                   ? {
                       name: result.name,
-                      image: result.image,
+                      image: "",
                       id: result.id,
                       _id: result._id,
                     }
                   : {
-                      name: entry.name,
+                      name: entry.author.name,
                       image: entry.author.image,
                       id: entry.author.id,
                       _id: entry.author._id,

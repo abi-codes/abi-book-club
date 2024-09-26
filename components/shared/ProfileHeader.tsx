@@ -131,7 +131,7 @@ const ProfileHeader = ({
                   alt="Profile image"
                   width={96}
                   height={96}
-                  className="rounded-full object-cover shadow-2xl"
+                  className="rounded-full object-cover"
                 />
               </div>
               <div className="flex-1">
@@ -199,20 +199,24 @@ const ProfileHeader = ({
         )}
 
         {!isOwner && !isMember && type === "Community" && (
-          <div>
-            <Button
-              onClick={() => joinCommunity()}
-              size="sm"
-              className="community-card_btn"
-              disabled={isRequester}
-            >
-              {isRequester ? "Pending" : "Join"}
-            </Button>
-          </div>
+          <Button
+            onClick={() => joinCommunity()}
+            size="sm"
+            className="community-card_btn"
+            disabled={isRequester}
+          >
+            {isRequester ? "Pending" : "Join"}
+          </Button>
         )}
         {isOwner && isMember && type === "Community" && (
           <div>
-            <AlertDialog>
+            <img
+              src="/assets/settings.svg"
+              alt="settings"
+              className="w-8 h-8 cursor-pointer"
+            />
+
+            {/* <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button
                   size="sm"
@@ -236,7 +240,7 @@ const ProfileHeader = ({
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
-            </AlertDialog>
+            </AlertDialog> */}
           </div>
         )}
         {!isOwner && isMember && type === "Community" && (

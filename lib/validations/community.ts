@@ -33,3 +33,7 @@ export const CommunityValidation = z
     },
     { path: ["username"], message: "Username already taken." }
   );
+
+export const CommunitySelectionValidation = z.object({
+  communityId: z.string(),
+});

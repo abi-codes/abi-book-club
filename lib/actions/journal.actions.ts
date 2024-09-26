@@ -8,6 +8,10 @@ import User from "../models/user.model";
 import Entry from "../models/entry.model";
 import Community from "../models/community.model";
 import Like from "../models/like.model";
+import { IEntry } from "../types/entry";
+import BomQueue from "../models/bomQueue.model";
+import BookSession from "../models/bookSession.model";
+import Book from "../models/book.model";
 
 export async function fetchPosts(pageNumber = 1, pageSize = 20) {
   connectToDB();
@@ -16,7 +20,7 @@ export async function fetchPosts(pageNumber = 1, pageSize = 20) {
   const skipAmount = (pageNumber - 1) * pageSize;
 
   // Create a query to fetch the posts that have no parent (top-level threads) (a thread that is not a comment/reply).
-  const postsQuery = Entry.find({ parentId: { $in: [null, undefined] } })
+  const postsQuery = await Entry.find({ parentId: { $in: [null, undefined] } })
     .sort({ createdAt: "desc" })
     .skip(skipAmount)
     .limit(pageSize)
@@ -39,6 +43,20 @@ export async function fetchPosts(pageNumber = 1, pageSize = 20) {
     .populate({
       path: "likes", // Populate the likes field
       model: Like,
+    })
+    .populate({
+      path: "queueId",
+      model: BomQueue,
+      populate: [
+        {
+          path: "bookSessions",
+          model: BookSession,
+          populate: {
+            path: "bookId",
+            model: Book,
+          },
+        },
+      ],
     });
 
   // Count the total number of top-level posts (threads) i.e., threads that are not comments.
@@ -46,11 +64,11 @@ export async function fetchPosts(pageNumber = 1, pageSize = 20) {
     parentId: { $in: [null, undefined] },
   }); // Get the total count of posts
 
-  const posts = await postsQuery.exec();
+  const posts = <IEntry[]>postsQuery;
 
   const isNext = totalPostsCount > skipAmount + posts.length;
 
-  return { posts, isNext };
+  return { posts: JSON.parse(JSON.stringify(posts)), isNext };
 }
 
 interface Params {
@@ -172,6 +190,20 @@ export async function fetchEntryById(threadId: string) {
         path: "community",
         model: Community,
         select: "_id id name image",
+      })
+      .populate({
+        path: "queueId",
+        model: BomQueue,
+        populate: [
+          {
+            path: "bookSessions",
+            model: BookSession,
+            populate: {
+              path: "bookId",
+              model: Book,
+            },
+          },
+        ],
       }) // Populate the community field with _id and name
       .populate({
         path: "children", // Populate the children field
@@ -216,7 +248,7 @@ export async function addCommentToEntry(
 
   try {
     // Find the original thread by its ID
-    const originalThread = await Entry.findById(threadId);
+    const originalThread = await Entry.findOne({ id: threadId });
 
     if (!originalThread) {
       throw new Error("Thread not found");
@@ -245,11 +277,7 @@ export async function addCommentToEntry(
   }
 }
 
-export async function likeEntry(
-  threadId: string,
-  userId: any,
-  path: string
-) {
+export async function likeEntry(threadId: string, userId: any, path: string) {
   connectToDB();
 
   try {
@@ -259,7 +287,7 @@ export async function likeEntry(
     const thread = await Entry.findById(threadId).populate({
       path: "likes", // Populate the likes field
       model: Like,
-    })
+    });
 
     if (!thread) {
       throw new Error("Thread not found");
@@ -273,7 +301,6 @@ export async function likeEntry(
       thread.likes.pull(likeCheck);
       // Delete the like record from the database
       await Like.findByIdAndDelete(likeCheck._id);
-
     } else {
       // Create like record
 

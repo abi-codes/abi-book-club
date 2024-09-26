@@ -15,6 +15,7 @@ export function MyThemeContextProvider(
   props: ThemePropsInterface
 ): ReactElement {
   const [isDarkTheme, setIsDarkTheme] = useState(false);
+
   useEffect(() => initialThemeHandler());
 
   function isLocalStorageEmpty(): boolean {

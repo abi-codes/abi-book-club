@@ -7,18 +7,18 @@ async function Page() {
   const user = await currentUser();
   if (!user) return null;
 
-  const userInfo: any = await fetchUser(user.id);
-  if (!userInfo?.onboarded) redirect("/onboarding");
+  const userInfo = await fetchUser(user.id);
+  if (!userInfo?.user.onboarded) redirect("/onboarding");
 
   return (
     <>
       <PostJournal
         user={{
-          id: userInfo.id,
-          _id: userInfo._id,
-          image: userInfo.image,
-          name: userInfo.name,
-          communities: JSON.parse(JSON.stringify(userInfo.communities)),
+          id: userInfo.user.id,
+          _id: userInfo.user._id,
+          image: userInfo.user.image,
+          name: userInfo.user.name,
+          communities: JSON.parse(JSON.stringify(userInfo.user.communities)),
         }}
       />
     </>

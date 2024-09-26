@@ -23,6 +23,13 @@ const bookReviewSchema = new mongoose.Schema({
   review: {
     type: String,
   },
+  createdDate: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedDate: {
+    type: Date,
+  },
 });
 
 const BookReview =

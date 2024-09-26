@@ -8,17 +8,20 @@ async function Page() {
   if (!user) return null;
 
   const userInfo = await fetchUser(user?.id);
-  if (userInfo && userInfo.onboarded) redirect("/");
+  if (userInfo.user && userInfo.user.onboarded) redirect("/");
 
   const userData = {
     id: user?.id,
-    objectId: userInfo?._id,
-    username: userInfo ? userInfo?.username : user?.username,
-    name: userInfo ? userInfo?.name : user?.firstName || "",
-    surname: userInfo ? userInfo?.surname : undefined,
-    bio: userInfo ? userInfo?.bio : "",
-    image: userInfo ? userInfo?.image : user?.imageUrl,
-    occupation: userInfo ? userInfo?.occupation : undefined,
+    objectId: userInfo?.user?._id,
+    email: userInfo?.user
+      ? userInfo?.user.email
+      : user?.emailAddresses[0].emailAddress || "",
+    username: userInfo.user ? userInfo?.user.username : user?.username || "",
+    name: userInfo.user ? userInfo?.user.name : user?.firstName || "",
+    surname: userInfo.user ? userInfo?.user.surname : "",
+    bio: userInfo.user ? userInfo?.user.bio : "",
+    image: userInfo.user ? userInfo?.user.image : user?.imageUrl,
+    occupation: userInfo.user ? userInfo?.user.occupation : "",
   };
   return (
     <main className="w-full bg-white dark:bg-dark-2">

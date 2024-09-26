@@ -9,6 +9,7 @@ import { fetchCommunityDetails } from "@/lib/actions/community.actions";
 import UserCard from "@/components/cards/UserCard";
 import { fetchUser } from "@/lib/actions/user.actions";
 import { redirect } from "next/navigation";
+import BoMTab from "@/components/shared/BoMTab";
 
 async function Page({ params }: { params: { id: string } }) {
   const user = await currentUser();
@@ -16,7 +17,7 @@ async function Page({ params }: { params: { id: string } }) {
 
   const userInfo = await fetchUser(user.id);
 
-  if (!userInfo?.onboarded) redirect("/onboarding");
+  if (!userInfo?.user.onboarded) redirect("/onboarding");
 
   const communityDetails = await fetchCommunityDetails(params.id);
   // check if current user is already a member of the community
@@ -33,7 +34,7 @@ async function Page({ params }: { params: { id: string } }) {
 
   const isRequester = requestCheck ? true : false;
 
-  const isOwner = user.id === communityDetails.createdBy.id;
+  const isOwner = user.id === communityDetails?.createdBy?.id;
 
   return (
     <section>
@@ -87,9 +88,16 @@ async function Page({ params }: { params: { id: string } }) {
               ))}
             </TabsList>
 
+            <TabsContent value="bom" className="w-full text-light-1">
+              {/* <BoMTab
+                currentUserId={userInfo._id}
+                communityId={communityDetails._id}
+                queues={JSON.parse(JSON.stringify(communityDetails.queues))}
+              /> */}
+            </TabsContent>
             <TabsContent value="entries" className="w-full text-light-1">
               <EntriesTab
-                currentUserId={userInfo._id}
+                currentUserId={userInfo.user._id}
                 accountId={communityDetails._id}
                 accountType="Community"
               />

@@ -82,7 +82,10 @@ const GoogleBookSearch = ({ onBookSelected }: Props) => {
           className="absolute flex flex-col w-full gap-4 bg-white dark:bg-dark-2 overflow-y-auto z-50 h-36 sm:h-72"
         >
           {predections.map((prediction: any, index) => (
-            <div className="hover:bg-gray-100 dark:hover:bg-dark-4 p-2">
+            <div
+              className="hover:bg-gray-100 dark:hover:bg-dark-4 p-2"
+              key={index}
+            >
               <div className="flex items-center gap-1 w-full max-h-20   cursor-pointer  ">
                 <div className="flex justify-center items-center relative p-4 w-16 h-20 rounded-md overflow-hidden">
                   <Image

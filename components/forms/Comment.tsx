@@ -47,6 +47,7 @@ const Comment = ({ entryId, currentUserImg, currentUserId }: Props) => {
     );
 
     form.reset();
+    setLoading(false);
   };
 
   return (

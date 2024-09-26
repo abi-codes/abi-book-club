@@ -30,10 +30,11 @@ interface Props {
     id: string;
     username: string;
     name: string;
-    surname: string | undefined;
+    email?: string;
+    surname?: string;
     bio: string;
     image: string;
-    occupation: string | undefined;
+    occupation?: string;
   };
   btnTitle: string;
   handleClose?: () => void;
@@ -57,6 +58,7 @@ const AccountProfile = ({ user, btnTitle, handleClose, onboarderd }: Props) => {
       userId: user?.id ? user.id : "",
       profile_photo: user?.image ? user.image : "",
       name: user?.name ? user.name : "",
+      email: user?.email ? user.email : "",
       surname: user?.surname ? user.surname : "",
       occupation: user?.occupation ? user.occupation : "",
       username: user?.username ? user.username : "",
@@ -83,6 +85,7 @@ const AccountProfile = ({ user, btnTitle, handleClose, onboarderd }: Props) => {
       surname: values.surname,
       path: pathname,
       username: values.username,
+      email: values.email,
       userId: user.id,
       bio: values.bio,
       image: values.profile_photo,

@@ -6,6 +6,11 @@ const bookshelfSchema = new mongoose.Schema({
     type: String,
     default: () => uuid.v4().toString(),
   },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
   bookId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Book",
@@ -19,6 +24,13 @@ const bookshelfSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "BookReview",
     required: false,
+  },
+  createdDate: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedDate: {
+    type: Date,
   },
 });
 

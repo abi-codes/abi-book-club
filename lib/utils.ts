@@ -65,4 +65,8 @@ export function timeDifferenceForDate(date: Date) {
   return timeString;
 }
 
-// Display the time difference
+//Write a function that only return the month of the date having recived a date string
+export function getMonth(dateString: string) {
+  const date = new Date(dateString);
+  return date.toLocaleString("default", { month: "long" });
+}

@@ -4,6 +4,7 @@ import { fetchUser } from "@/lib/actions/user.actions";
 import { currentUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import Comment from "@/components/forms/Comment";
+import CSEntryCard from "@/components/cards/EntryCard/CSEntryCard";
 
 const Page = async ({ params }: { params: { id: string } }) => {
   if (!params.id) return null;
@@ -14,17 +15,19 @@ const Page = async ({ params }: { params: { id: string } }) => {
 
   const userInfo = await fetchUser(user.id);
 
-  if (!userInfo?.onboarded) redirect("/onboarding");
+  if (!userInfo?.user.onboarded) redirect("/onboarding");
 
   const entry = await fetchEntryById(params.id);
 
+  console.log("Queue id", entry.queueId);
   return (
     <section className="relative">
       <div>
-        <EntryCard
+        <CSEntryCard
           key={entry._id}
           id={entry._id}
-          currentUserId={userInfo?._id || ""}
+          queueId={JSON.parse(JSON.stringify(entry?.queueId))}
+          currentUserId={userInfo?.user._id || ""}
           parentId={entry.parentId}
           content={entry.text}
           author={{
@@ -51,8 +54,8 @@ const Page = async ({ params }: { params: { id: string } }) => {
       <div className="mt-7">
         <Comment
           entryId={entry.id}
-          currentUserImg={userInfo.image}
-          currentUserId={JSON.stringify(userInfo._id)}
+          currentUserImg={userInfo.user.image}
+          currentUserId={JSON.stringify(userInfo.user._id)}
         />
       </div>
 
@@ -61,7 +64,7 @@ const Page = async ({ params }: { params: { id: string } }) => {
           <EntryCard
             key={comment._id}
             id={comment._id}
-            currentUserId={userInfo?._id || ""}
+            currentUserId={userInfo?.user._id || ""}
             parentId={comment.parentId}
             content={comment.text}
             author={{

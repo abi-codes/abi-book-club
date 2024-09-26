@@ -5,7 +5,7 @@ import { formatDateString } from "@/lib/utils";
 import { timeDifferenceForDate } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import "./EntryCard.css";
 import {
   AlertDialog,
@@ -19,6 +19,8 @@ import {
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
 import { useEffect, useState } from "react";
+import { IBomQueue } from "@/lib/types/bomQueue";
+import BoMQueueCard from "./BoMQueueCard";
 
 interface Props {
   id: string;
@@ -32,8 +34,8 @@ interface Props {
     _id: string;
   };
   community: {
-    _id: string;
-    id: string;
+    _id?: string;
+    id?: string;
     name: string;
     image: string;
   } | null;
@@ -44,8 +46,9 @@ interface Props {
       name: string;
     };
   }[];
-  likes: [];
+  likes: any;
   isComment?: boolean;
+  queueId?: IBomQueue;
 }
 
 const EntryCard = ({
@@ -57,16 +60,20 @@ const EntryCard = ({
   comments,
   likes,
   isComment,
+  queueId,
   currentUserId,
 }: Props) => {
+  const router = useRouter();
+
   const pathname = usePathname();
+
   const handleLike = async () => {
     await likeEntry(id, currentUserId, pathname);
+
+    router.push(pathname);
   };
 
-  const path = usePathname();
-
-  const isEntryPage = path.includes("/journal/");
+  const isEntryPage = pathname.includes("/journal/");
 
   const isOwner = author._id === currentUserId;
 
@@ -74,9 +81,33 @@ const EntryCard = ({
 
   const handleDelete = async () => {
     await deleteEntry(id, pathname);
+
+    router.push(pathname);
   };
 
   const [isClient, setIsClient] = useState(false);
+
+  const handleContentCheck = () => {
+    //Ensure that the content uploaded is not an image. If it is an image exclude it from the count.
+
+    //Check if content includes an image tag
+    const imageTag = content.includes("<img");
+
+    let cleanContent = content;
+    //Check how many characters there are before the image tag
+    if (imageTag) {
+      cleanContent = content.replace(/<img[^>]*>/g, "");
+    }
+    const contentLength = cleanContent.length;
+
+    if (contentLength < 400) {
+      return true;
+    }
+
+    if (contentLength > 400) {
+      return false;
+    }
+  };
 
   useEffect(() => {
     setIsClient(true);
@@ -123,12 +154,21 @@ const EntryCard = ({
                 dangerouslySetInnerHTML={{
                   __html: isEntryPage
                     ? content
-                    : content.slice(0, 400) +
-                      `${content.length > 400 ? "..." : ""}`,
+                    : !isEntryPage && handleContentCheck()
+                    ? content
+                    : content.slice(0, 400) + "...",
                 }}
               ></div>
             )}
-            {content.length > 400 && !isEntryPage && (
+            {queueId && (
+              <BoMQueueCard
+                queue={queueId}
+                userId={currentUserId}
+                isOwner={isOwner}
+              />
+            )}
+
+            {content.length > 400 && !isEntryPage && !handleContentCheck() && (
               <Link href={`/journal/${id}`}>
                 <p className="mt-1 cursor-pointer text-blue hover:underline">
                   Read More

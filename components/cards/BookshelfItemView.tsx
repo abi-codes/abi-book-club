@@ -49,7 +49,10 @@ const BookshelfItemView = ({ open, shelfItem, handleClose }: Props) => {
         <div className="flex flex-col gap-3">
           <Separator />
           {shelfItem?.book?.categories && (
-            <p className="text-subtle-semibold text-center lg:text-small-regular text-black dark:text-light-1">
+            <p
+              className="text-subtle-semibold text-center 
+            lg:text-small-regular text-black dark:text-light-1"
+            >
               {shelfItem?.book?.categories[0]}
             </p>
           )}

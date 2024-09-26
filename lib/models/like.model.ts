@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
+const uuid = require("uuid");
 
 const likeSchema = new mongoose.Schema({
+  id: {
+    type: String,
+    default: () => uuid.v4().toString(),
+  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

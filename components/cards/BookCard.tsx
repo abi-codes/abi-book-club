@@ -22,9 +22,8 @@ import Rating from "../custom-ui/RatingInput";
 
 interface Props {
   book: {
-    id?: string;
+    id: string;
     title: string;
-    blurb: string;
     authors: string[];
     cover: string;
   };
@@ -47,7 +46,7 @@ const BookCard = ({
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   return (
-    <article className="w-24 lg:w-40">
+    <article className="w-40">
       {!isOwner ? (
         <div className="flex flex-col" onClick={() => handleViewItem()}>
           <div
@@ -65,11 +64,17 @@ const BookCard = ({
 
           <div className="flex justify-between items-center gap-2 cursor-pointer">
             <div className="flex flex-col">
-              <h3 className="text-small-semibold lg:text-base-semibold h-11 w-10/12 text-black dark:text-light-1 mt-2 overflow-hidden text-ellipsis">
+              <h3
+                className="text-small-semibold lg:text-base-semibold h-11 w-10/12 
+              text-black dark:text-light-1 mt-2 overflow-hidden text-ellipsis"
+              >
                 {book.title.substring(0, 30)}
                 {book.title.length > 20 && "..."}
               </h3>
-              <p className="text-subtle-semibold lg:text-small-regular text-black dark:text-light-1 h-4 w-10/12 overflow-hidden  text-ellipsis">
+              <p
+                className="text-subtle-semibold lg:text-small-regular text-black 
+              dark:text-light-1 h-5 w-10/12 overflow-hidden  text-ellipsis"
+              >
                 {book.authors.map((a) => a)}
               </p>
               {review?.rating && <Rating defaultRating={review?.rating} />}
@@ -82,10 +87,11 @@ const BookCard = ({
             <DropdownMenuTrigger asChild>
               <div
                 // onClick={() => handleSelectItem()}
-                className="relative w-full h-40  lg:h-60 overflow-hidden cursor-pointer"
+                className="relative w-full h-40 lg:h-60 
+                           overflow-hidden cursor-pointer"
               >
                 <Image
-                  src={book.cover}
+                  src={book?.cover}
                   alt={book.title}
                   fill
                   className="object-contain"
@@ -96,10 +102,13 @@ const BookCard = ({
               <div className="flex flex-col">
                 <h3 className="text-small-semibold lg:text-base-semibold h-11 w-10/12 text-black dark:text-light-1 mt-2 overflow-hidden text-ellipsis">
                   {book.title.substring(0, 30)}
-                  {book.title.length > 20 && "..."}
+                  {book.title.length > 30 && "..."}
                 </h3>
-                <p className="text-subtle-semibold lg:text-small-regular text-black dark:text-light-1 h-4 w-10/12 overflow-hidden text-ellipsis">
-                  {book.authors.map((a) => a)}
+                <p
+                  className="text-subtle-semibold lg:text-small-regular text-black 
+                            dark:text-light-1 h-4 w-10/12 overflow-hidden text-ellipsis"
+                >
+                  {book.authors.join(", ")}
                 </p>
                 {review?.rating && (
                   <div className="mt-2 w-3/4 ">

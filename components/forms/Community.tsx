@@ -25,19 +25,13 @@ import Image from "next/image";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 import { usePathname, useRouter } from "next/navigation";
+import { ICommunityForm } from "@/lib/types/community";
 
 interface Props {
-  community: {
-    id?: string;
-    username: string;
-    name: string;
-    image: string;
-    bio: string;
-  };
-  userId: string;
+  community: ICommunityForm;
 }
 
-const Community = ({ community, userId }: Props) => {
+const Community = ({ community }: Props) => {
   const { startUpload } = useUploadThing("media");
   const [files, setFiles] = useState<File[]>([]);
 
@@ -94,7 +88,7 @@ const Community = ({ community, userId }: Props) => {
       }
     }
 
-    if (pathname.includes("/clubs/") && values.communityId?.trim() !== "") {
+    if (values.communityId?.trim() !== "") {
       await updateCommunityInfo(
         values.communityId,
         values.name,
@@ -111,7 +105,7 @@ const Community = ({ community, userId }: Props) => {
         values.username,
         values.image,
         values.bio,
-        userId
+        community.ownerUserId
       );
       router.push(`/clubs/${response}`);
     }
