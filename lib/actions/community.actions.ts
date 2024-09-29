@@ -539,7 +539,7 @@ export async function fetchCommunities({
       ];
     }
 
-    if (userId.trim() !== "") {
+    if (userId && userId !== "") {
       query.$and = [{ createdby: { $ne: userId } }]; // Exclude the current user from the results.
     }
 

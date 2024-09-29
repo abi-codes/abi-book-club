@@ -102,7 +102,7 @@ async function Page() {
                     </p>
                   </div>
                   <p className="!text-small-regular text-gray-400 dark:text-gray-600">
-                    {timeDifferenceForDate(activity.createdAt)} ago
+                    {/* {timeDifferenceForDate(activity.createdAt)} ago */}
                   </p>
                 </article>
               </Link>
