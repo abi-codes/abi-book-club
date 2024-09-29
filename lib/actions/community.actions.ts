@@ -528,9 +528,7 @@ export async function fetchCommunities({
     const regex = new RegExp(searchString, "i");
 
     // Create an initial query object to filter communities.
-    const query: FilterQuery<typeof Community> = {
-      createdBy: { $ne: userId }, // Exclude the current user from the results.
-    };
+    const query: FilterQuery<typeof Community> = {};
 
     // If the search string is not empty, add the $or operator to match either username or name fields.
     if (searchString.trim() !== "") {
@@ -539,6 +537,10 @@ export async function fetchCommunities({
         { name: { $regex: regex } },
         { status: "active" },
       ];
+    }
+
+    if (userId && userId !== "") {
+      query.$and = [{ createdby: { $ne: userId } }]; // Exclude the current user from the results.
     }
 
     // Define the sort options for the fetched communities based on createdAt field and provided sort order.

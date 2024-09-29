@@ -1,6 +1,6 @@
 "use server";
 
-import { FilterQuery, SortOrder, Schema } from "mongoose";
+import { FilterQuery, SortOrder, Schema, model } from "mongoose";
 import { revalidatePath } from "next/cache";
 
 import Community from "../models/community.model";
@@ -671,6 +671,27 @@ export async function getActivity(userId: string) {
       select: "name image _id",
     });
 
+    const user = await User.findOne({ _id: userId }).populate({
+      path: "communities",
+      model: Community,
+      populate: {
+        path: "queues",
+        model: BomQueue,
+        populate: {
+          path: "communityId",
+          model: Community,
+          select: "name image _id",
+        },
+      },
+    });
+
+    const communityQueues = user.communities.reduce(
+      (acc: any, community: any) => {
+        return acc.concat(community.queues);
+      },
+      []
+    );
+
     const likes = userThreads.reduce((acc, userThread) => {
       return acc.concat(userThread.likes);
     }, []);
@@ -679,12 +700,18 @@ export async function getActivity(userId: string) {
       ...reply.toObject(),
       type: "reply",
     }));
+
     const likesWithType = likes.map((like: any) => ({
       ...like.toObject(),
       type: "like",
     }));
 
-    return [...repliesWithType, ...likesWithType];
+    const queuesWithType = communityQueues.map((queue: any) => ({
+      ...queue.toObject(),
+      type: "queue",
+    }));
+
+    return [...repliesWithType, ...likesWithType, ...queuesWithType];
   } catch (error) {
     console.error("Error fetching replies: ", error);
     throw error;

@@ -17,6 +17,7 @@ async function Page() {
   //getActivity
   const activity = await getActivity(userInfo.user._id);
 
+  console.log(activity);
   return (
     <section>
       <h1 className="head-text text-black dark:text-white leading-none mb-1">
@@ -34,61 +35,83 @@ async function Page() {
       ></img>
 
       <section className="mt-10 flex flex-col gap-5">
-        {activity.length > 0 ? (
-          <>
-            {activity.map((activity: any) =>
-              activity.type === "reply" ? (
-                <Link key={activity._id} href={`/journal/${activity.parentId}`}>
-                  <article className="activity-card justify-between">
-                    <div className="flex gap-2">
-                      <Image
-                        src={activity.author.image}
-                        alt="Profile picture"
-                        width={20}
-                        height={20}
-                        className="rounded-full object-cover"
-                      />
-                      <p className="!text-small-regular text-gray-800 dark:text-light-1">
-                        <span className="mr-1 text-red-800">
-                          {activity.author.name}
-                        </span>{" "}
-                        replied to your thread
-                      </p>
-                    </div>
-                    <p className="!text-small-regular text:slate-600 dark:text-gray-600">
-                      {timeDifferenceForDate(activity.createdAt)} ago
+        {activity.length > 0 &&
+          activity.map((activity: any) =>
+            activity.type === "reply" ? (
+              <Link key={activity._id} href={`/journal/${activity.parentId}`}>
+                <article className="activity-card justify-between">
+                  <div className="flex gap-2">
+                    <Image
+                      src={activity.author.image}
+                      alt="Profile picture"
+                      width={20}
+                      height={20}
+                      className="rounded-full object-cover"
+                    />
+                    <p className="!text-small-regular text-gray-800 dark:text-light-1">
+                      <span className="mr-1 text-red-800">
+                        {activity.author.name}
+                      </span>{" "}
+                      replied to your thread
                     </p>
-                  </article>
-                </Link>
-              ) : (
-                <Link key={activity._id} href={`/journal/${activity.parentId}`}>
-                  <article className="activity-card justify-between">
-                    <div className="flex gap-3">
-                      <Image
-                        src={activity.user.image}
-                        alt="Profile picture"
-                        width={20}
-                        height={20}
-                        className="rounded-full object-cover"
-                      />
-                      <p className="!text-small-regular text-gray-800 dark:text-light-1">
-                        <span className="mr-1 text-red-800">
-                          {activity.user.name}
-                        </span>{" "}
-                        liked your thread
-                      </p>
-                    </div>
-                    <p className="!text-small-regular text-gray-400 dark:text-gray-600">
-                      {timeDifferenceForDate(activity.createdAt)} ago
+                  </div>
+                  <p className="!text-small-regular text:slate-600 dark:text-gray-600">
+                    {timeDifferenceForDate(activity.createdAt)} ago
+                  </p>
+                </article>
+              </Link>
+            ) : activity.type === "like" ? (
+              <Link key={activity._id} href={`/journal/${activity.parentId}`}>
+                <article className="activity-card justify-between">
+                  <div className="flex gap-3">
+                    <Image
+                      src={activity.user.image}
+                      alt="Profile picture"
+                      width={20}
+                      height={20}
+                      className="rounded-full object-cover"
+                    />
+                    <p className="!text-small-regular text-gray-800 dark:text-light-1">
+                      <span className="mr-1 text-red-800">
+                        {activity.user.name}
+                      </span>{" "}
+                      liked your thread
                     </p>
-                  </article>
-                </Link>
-              )
-            )}
-          </>
-        ) : (
+                  </div>
+                  <p className="!text-small-regular text-gray-400 dark:text-gray-600">
+                    {timeDifferenceForDate(activity.createdAt)} ago
+                  </p>
+                </article>
+              </Link>
+            ) : (
+              <Link key={activity._id} href={`/journal/${activity.parentId}`}>
+                <article className="activity-card justify-between">
+                  <div className="flex gap-3">
+                    <Image
+                      src={activity.communityId.image}
+                      alt="Profile picture"
+                      width={20}
+                      height={20}
+                      className="rounded-full object-cover"
+                    />
+                    <p className="!text-small-regular text-gray-800 dark:text-light-1">
+                      <span className="mr-1 text-red-800">
+                        {activity.communityId.name}
+                      </span>{" "}
+                      liked your thread
+                    </p>
+                  </div>
+                  <p className="!text-small-regular text-gray-400 dark:text-gray-600">
+                    {/* {timeDifferenceForDate(activity.createdAt)} ago */}
+                  </p>
+                </article>
+              </Link>
+            )
+          )}
+
+        {/* : (
           <p className="!text-base-regular text-light-3">No activity yet</p>
-        )}
+        )} */}
       </section>
     </section>
   );
