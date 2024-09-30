@@ -691,7 +691,7 @@ export async function getActivity(userId: string) {
       },
     });
 
-    const communityQueues = user.communities.some((res: any) => {
+    const communityQueues = user.communities.filter((res: any) => {
       const check = res.threads.reduce((acc: any, thread: any) => {
         return acc.concat(thread.queueId);
       }, []);

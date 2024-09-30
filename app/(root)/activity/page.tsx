@@ -17,7 +17,6 @@ async function Page() {
   //getActivity
   const activity = await getActivity(userInfo.user._id);
 
-  console.log(activity);
   return (
     <section>
       <h1 className="head-text text-black dark:text-white leading-none mb-1">
@@ -88,16 +87,14 @@ async function Page() {
                 <article className="activity-card justify-between">
                   <div className="flex gap-3">
                     <Image
-                      src={activity.communityId.image}
+                      src={activity.image}
                       alt="Profile picture"
                       width={20}
                       height={20}
                       className="rounded-full object-cover"
                     />
                     <p className="!text-small-regular text-gray-800 dark:text-light-1">
-                      <span className="mr-1 text-red-800">
-                        {activity.communityId.name}
-                      </span>{" "}
+                      <span className="mr-1 text-red-800">{activity.name}</span>{" "}
                       published a new queue
                     </p>
                   </div>

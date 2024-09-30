@@ -10,7 +10,7 @@ export type ICommunity = {
   image: string;
   bio: string;
   status: string;
-  createdBy: IUser;
+  createdBy: IUser | string;
   threads: IEntry[];
   members: IUser[];
   requests: IUser[];

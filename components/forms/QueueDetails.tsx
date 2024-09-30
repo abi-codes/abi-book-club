@@ -192,6 +192,7 @@ const QueueDetails = ({ _userId, userId }: Props) => {
               key={queue.id}
               queue={queue}
               userId={_userId}
+              isOwner={queue.communityId.createdBy == _userId}
               reloadQueue={() => fetchQueue()}
             />
           ))}
