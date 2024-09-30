@@ -98,7 +98,7 @@ async function Page() {
                       <span className="mr-1 text-red-800">
                         {activity.communityId.name}
                       </span>{" "}
-                      liked your thread
+                      published a new queue
                     </p>
                   </div>
                   <p className="!text-small-regular text-gray-400 dark:text-gray-600">

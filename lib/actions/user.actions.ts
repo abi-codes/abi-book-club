@@ -675,28 +675,36 @@ export async function getActivity(userId: string) {
       path: "communities",
       model: Community,
       populate: {
-        path: "queues",
-        model: BomQueue,
-        populate: {
-          path: "communityId",
-          model: Community,
-          select: "name image _id",
-        },
+        path: "threads",
+        model: Entry,
+        populate: [
+          {
+            path: "community",
+            model: Community,
+            select: "name image _id",
+          },
+          {
+            path: "queueId",
+            model: BomQueue,
+          },
+        ],
       },
     });
 
-    const communityQueues = user.communities.reduce(
-      (acc: any, community: any) => {
-        return acc.concat(community.queues);
-      },
-      []
-    );
+    const communityQueues = user.communities.some((res: any) => {
+      const check = res.threads.reduce((acc: any, thread: any) => {
+        return acc.concat(thread.queueId);
+      }, []);
+      if (check.length > 0) {
+        return check;
+      }
+    });
 
-    const likes = userThreads.reduce((acc, userThread) => {
+    const likes = userThreads.reduce((acc: any, userThread: any) => {
       return acc.concat(userThread.likes);
     }, []);
 
-    const repliesWithType = replies.map((reply) => ({
+    const repliesWithType = replies.map((reply: any) => ({
       ...reply.toObject(),
       type: "reply",
     }));
@@ -706,10 +714,14 @@ export async function getActivity(userId: string) {
       type: "like",
     }));
 
-    const queuesWithType = communityQueues.map((queue: any) => ({
-      ...queue.toObject(),
-      type: "queue",
-    }));
+    let queuesWithType: any[] = [];
+
+    if (communityQueues && communityQueues.length > 0) {
+      queuesWithType = communityQueues.map((queue: any) => ({
+        ...queue.toObject(),
+        type: "queue",
+      }));
+    }
 
     return [...repliesWithType, ...likesWithType, ...queuesWithType];
   } catch (error) {

@@ -985,7 +985,10 @@ export async function publishBookQueue(
     connectToDB();
 
     // Find the queue by its unique id
-    const queue = await BomQueue.findOne({ id: queueId });
+    const queue = await BomQueue.findOne({ id: queueId }).populate({
+      path: "communityId",
+      model: Community,
+    });
 
     if (!queue) {
       throw new Error("Queue not found");
@@ -1005,6 +1008,10 @@ export async function publishBookQueue(
       author: userId,
       community: queue.communityId,
       queueId: queue._id,
+    });
+
+    await Community.findByIdAndUpdate(queue.communityId, {
+      $push: { threads: createEntry._id },
     });
 
     return queue;
