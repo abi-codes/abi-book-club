@@ -158,8 +158,8 @@ const EntryCard = ({
                     <Image
                       src={"assets/menu-dots.svg"}
                       alt="Menu icon"
-                      width={13}
-                      height={13}
+                      width={14}
+                      height={14}
                     />
                   </div>
                 </DropdownMenuTrigger>
