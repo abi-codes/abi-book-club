@@ -1,3 +1,11 @@
+/*import { menuDots } from "./public/assets/menu-dots.svg";
+
+export const functionIcons = [
+  {
+    menuDots,
+  },
+];*/
+
 export const sidebarLinks = [
   {
     imgURL: "/assets/home.svg",

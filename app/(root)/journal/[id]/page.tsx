@@ -26,7 +26,7 @@ const Page = async ({ params }: { params: { id: string } }) => {
         <CSEntryCard
           key={entry._id}
           id={entry._id}
-          queueId={JSON.parse(JSON.stringify(entry?.queueId))}
+          queueId={entry.queueId && JSON.parse(JSON.stringify(entry?.queueId))}
           currentUserId={userInfo?.user._id || ""}
           parentId={entry.parentId}
           content={entry.text}
