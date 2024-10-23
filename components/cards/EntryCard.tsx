@@ -203,7 +203,7 @@ const EntryCard = ({
 
           <div className={`${isComment && "mb-10"} mt-5 flex flex-col gap-3`}>
             <div className="flex items-center gap-3.5">
-              <p className=" meta-info !text-small-regular">
+              <p className=" meta-info !text-small-regular absolute right-4">
                 {timeDifferenceForDate(new Date(createdAt))} ago
               </p>
               <div className="flex items-center gap-1">
