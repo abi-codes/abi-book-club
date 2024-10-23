@@ -6,14 +6,23 @@ const activitySchema = new mongoose.Schema({
     type: String,
     default: () => uuid.v4().toString(),
   },
-  userId: {
+  creatorUser: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
   },
-  communityId: {
+  recieverUser: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  creatorCommunity: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Community",
+    required: true,
+  },
+  objectId: {
+    type: String,
     required: true,
   },
   createdDate: {
