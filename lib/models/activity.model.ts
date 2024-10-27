@@ -9,7 +9,6 @@ const activitySchema = new mongoose.Schema({
   creatorUser: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-    required: true,
   },
   recieverUser: {
     type: mongoose.Schema.Types.ObjectId,
@@ -19,7 +18,6 @@ const activitySchema = new mongoose.Schema({
   creatorCommunity: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Community",
-    required: true,
   },
   objectId: {
     type: String,

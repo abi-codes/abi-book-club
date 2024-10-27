@@ -12,7 +12,12 @@ import { IEntry } from "../types/entry";
 import BomQueue from "../models/bomQueue.model";
 import BookSession from "../models/bookSession.model";
 import Book from "../models/book.model";
-import { createThreadLike, createThreadReply } from "./activity.action";
+import {
+  createThreadLike,
+  createThreadReply,
+  removeThreadLike,
+  removeThreadReply,
+} from "./activity.action";
 
 export async function fetchPosts(pageNumber = 1, pageSize = 20) {
   connectToDB();
@@ -156,6 +161,11 @@ export async function deleteEntry(id: string, path: string): Promise<void> {
       ].filter((id) => id !== undefined)
     );
 
+    //Remove thread comment activity
+    if (mainThread.parentId) {
+      removeThreadReply(mainThread.author._id.toString(), id);
+    }
+
     // Recursively delete child threads and their descendants
     await Entry.deleteMany({ _id: { $in: descendantThreadIds } });
 
@@ -271,7 +281,7 @@ export async function addCommentToEntry(
     // Save the updated original thread to the database
     await originalThread.save();
 
-    await createThreadReply(userId, threadId);
+    await createThreadReply(userId, savedCommentThread._id);
 
     revalidatePath(path);
   } catch (err) {
@@ -304,9 +314,11 @@ export async function likeEntry(threadId: string, userId: any, path: string) {
       thread.likes.pull(likeCheck);
       // Delete the like record from the database
       await Like.findByIdAndDelete(likeCheck._id);
+
+      //Remove thread like activity
+      await removeThreadLike(userId, threadId);
     } else {
       // Create like record
-
       const likeEntry = new Like({
         user: userId,
         createdAt: Date.now(),
@@ -315,12 +327,13 @@ export async function likeEntry(threadId: string, userId: any, path: string) {
       const savedLikeEntry = await likeEntry.save();
       // Add the response _id to the thread's likes array
       thread.likes.push(savedLikeEntry._id);
+
+      //Create thread like acitivity
+      await createThreadLike(userId, threadId);
     }
 
     // Save the updated thread to the database
     await thread.save();
-
-    await createThreadLike(userId, threadId);
 
     revalidatePath(path);
   } catch (err) {

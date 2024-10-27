@@ -19,6 +19,7 @@ import { IClubUser } from "../types/user";
 import { IBomQueue } from "../types/bomQueue";
 import Bom from "../models/bom.model";
 import { IBom } from "../types/bom";
+import { createQueuePublish } from "./activity.action";
 
 export async function createCommunity(
   name: string,
@@ -1014,7 +1015,11 @@ export async function publishBookQueue(
       $push: { threads: createEntry._id },
     });
 
-    return queue;
+    //create queue publish activity
+    createQueuePublish(
+      queue.communityId._id.toString(),
+      createEntry._id.toString()
+    );
   } catch (error) {
     // Handle any errors
     console.error("Error publishing queue:", error);
