@@ -101,6 +101,8 @@ export async function handleSessionVote(
 
     await bookSession.save();
 
+    //Create the activity for the vote
+
     revalidatePath(path);
   } catch (error: any) {
     throw new Error(`Failed to vote: ${error.message}`);

@@ -2,6 +2,14 @@ import Activity from "../models/activity.model";
 import Community from "../models/community.model";
 import Entry from "../models/entry.model";
 
+export async function fetchActivities(userId: string) {
+  const activities = await Activity.find({ recieverUser: userId }).sort({
+    createdAt: -1,
+  });
+
+  return activities;
+}
+
 export async function createActivity(
   recieverUser: string,
   objectId: string,

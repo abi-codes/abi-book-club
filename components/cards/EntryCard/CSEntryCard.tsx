@@ -274,8 +274,6 @@ const CSEntryCard = ({
         </div>
       </div>
 
-      {/* TODO: Delete thread */}
-
       <AlertDialog>
         <AlertDialogTrigger asChild>
           <div

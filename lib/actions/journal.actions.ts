@@ -12,6 +12,7 @@ import { IEntry } from "../types/entry";
 import BomQueue from "../models/bomQueue.model";
 import BookSession from "../models/bookSession.model";
 import Book from "../models/book.model";
+import { createThreadLike, createThreadReply } from "./activity.action";
 
 export async function fetchPosts(pageNumber = 1, pageSize = 20) {
   connectToDB();
@@ -108,7 +109,7 @@ export async function createEntry({ text, author, communityId, path }: Params) {
   }
 }
 
-async function fetchAllChildEntries(threadId: string): Promise<any[]> {
+export async function fetchAllChildEntries(threadId: string): Promise<any[]> {
   const childThreads = await Entry.find({ parentId: threadId });
 
   const descendantThreads = [];
@@ -270,6 +271,8 @@ export async function addCommentToEntry(
     // Save the updated original thread to the database
     await originalThread.save();
 
+    await createThreadReply(userId, threadId);
+
     revalidatePath(path);
   } catch (err) {
     console.error("Error while adding comment:", err);
@@ -316,6 +319,8 @@ export async function likeEntry(threadId: string, userId: any, path: string) {
 
     // Save the updated thread to the database
     await thread.save();
+
+    await createThreadLike(userId, threadId);
 
     revalidatePath(path);
   } catch (err) {
