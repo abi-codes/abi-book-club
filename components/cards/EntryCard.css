@@ -1,26 +1,41 @@
 .parent-text h1 {
   font-size: xx-large;
+  font-weight: 700;
   line-height: 34px;
+  padding-bottom: 10px;
 }
 .parent-text h2 {
   font-size: x-large;
+  font-weight: 600;
   line-height: 34px;
+  padding-bottom: 4px;
 }
 .parent-text h3 {
   font-size: larger;
+  font-weight: 600;
   line-height: 34px;
+  padding-top: 4px;
+  padding-bottom: 4px;
 }
 .parent-text h4 {
   font-size: large;
   line-height: 34px;
+  padding-bottom: 3px;
 }
 .parent-text h5 {
   font-size: medium;
   line-height: 34px;
+  padding-bottom: 3px;
 }
 .parent-text h6 {
   font-size: small;
   line-height: 34px;
+  padding-bottom: 3px;
+}
+
+.parent-text p {
+  padding-top: 3px;
+  padding-bottom: 3px;
 }
 
 .parent-text ul {

@@ -16,7 +16,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata = {
   title: "Abi's Book Club",
   description: "A cutting edge literature networking platform",
-  image: "/assets/home-page.jpeg",
+  image: "/public/assets/home-page.jpeg",
 };
 
 export default function RootLayout({
@@ -39,7 +39,15 @@ export default function RootLayout({
             <meta property="og:title" content={metadata.title} />
             <meta property="og:description" content={metadata.description} />
             <meta property="og:image" content={metadata.image} />
+            <meta property="og:image:width" content="1200" />
+            <meta property="og:image:height" content="600" />
+            <meta property="og:url" content="https://www.abibookclub.com/" />
             {/* You can add more OG tags as needed */}
+            {/* Twitter Card Meta Tags */}
+            <meta name="twitter:card" content="summary_large_image" />
+            <meta name="twitter:title" content={metadata.title} />
+            <meta name="twitter:description" content={metadata.description} />
+            <meta name="twitter:image" content={metadata.image} />
           </Head>
           <body className={inter.className}>
             <Topbar />

@@ -115,7 +115,7 @@ const EntryCard = ({
 
   return (
     <article
-      className={`group relative overflow-hidden flex w-full flex-col rounded-xl parent-text p-1 hover:bg-gray-100 dark:hover:bg-dark-4  ${
+      className={`group relative overflow-hidden flex w-full flex-col rounded-xl parent-text p-1 ${
         isComment ? "px-0 xs:px-7" : " bg-white dark:bg-dark-2 p-2"
       } `}
     >
