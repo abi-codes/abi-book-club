@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import "./EntryCard.css";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,6 +19,16 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
 import { useEffect, useState } from "react";
 import { IBomQueue } from "@/lib/types/bomQueue";
 import BoMQueueCard from "./BoMQueueCard";
@@ -115,19 +126,16 @@ const EntryCard = ({
 
   return (
     <article
-      className={`group relative overflow-hidden flex w-full flex-col rounded-xl parent-text p-1 hover:bg-gray-100 dark:hover:bg-dark-4  ${
+      className={`group relative overflow-hidden flex w-full flex-col rounded-xl parent-text p-1 ${
         isComment ? "px-0 xs:px-7" : " bg-white dark:bg-dark-2 p-2"
       } `}
     >
       <div className="flex w-full flex-1 flex-row gap-4 p-4">
-        <p className=" meta-info !text-small-regular absolute right-4">
-          {timeDifferenceForDate(new Date(createdAt))} ago
-        </p>
         <div className="flex w-full flex-col">
           <div className="flex flex-row gap-3 mb-3">
             <Link
               href={`/profile/${author.id}`}
-              className="flex items-center rounded-full relative h-12 w-12 overflow-hidden cursor-pointer"
+              className="flex items-center rounded-full relative h-6 w-6 overflow-hidden cursor-pointer"
             >
               <Image
                 src={author.image}
@@ -138,47 +146,66 @@ const EntryCard = ({
               />
             </Link>
             <Link href={`/profile/${author.id}`} className="w-fit">
-              <h4 className=" text-base-semibold text-black dark:text-light-1">
+              <h4 className="!text-small-regular text-black dark:text-light-1">
                 {author.name}
               </h4>
             </Link>
+
+            <div className="absolute right-10">
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <div className="hover:bg-gray-100 dark:hover:bg-dark-4 rounded-full p-2">
+                    <Image
+                      src={"assets/menu-dots.svg"}
+                      alt="Menu icon"
+                      width={14}
+                      height={14}
+                    />
+                  </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuLabel>Options</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => handleDelete()}>
+                    Delete
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
 
-          <div
-            className={`${
-              isComment && "mb-5"
-            } mt-2 text-small-regular text-black dark:text-light-2 w-full text-wrap`}
-          >
-            {isClient && (
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: isEntryPage
-                    ? content
-                    : !isEntryPage && handleContentCheck()
-                    ? content
-                    : content.slice(0, 400) + "...",
-                }}
-              ></div>
-            )}
-            {queueId && (
-              <BoMQueueCard
-                queue={queueId}
-                userId={currentUserId}
-                isOwner={isOwner}
-              />
-            )}
-
-            {content.length > 400 && !isEntryPage && !handleContentCheck() && (
-              <Link href={`/journal/${id}`}>
-                <p className="mt-1 cursor-pointer text-blue hover:underline">
-                  Read More
-                </p>
-              </Link>
-            )}
-          </div>
+          <Link href={`/journal/${id}`}>
+            <div
+              className={`${
+                isComment && "mb-5"
+              } mt-2 text-small-regular text-black dark:text-light-2 w-full text-wrap`}
+            >
+              {isClient && (
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: isEntryPage
+                      ? content
+                      : !isEntryPage && handleContentCheck()
+                      ? content
+                      : content.slice(0, 400) + "...",
+                  }}
+                ></div>
+              )}
+              {queueId && (
+                <BoMQueueCard
+                  queue={queueId}
+                  userId={currentUserId}
+                  isOwner={isOwner}
+                />
+              )}
+            </div>
+          </Link>
 
           <div className={`${isComment && "mb-10"} mt-5 flex flex-col gap-3`}>
             <div className="flex items-center gap-3.5">
+              <p className=" meta-info !text-small-regular absolute right-4">
+                {timeDifferenceForDate(new Date(createdAt))} ago
+              </p>
               <div className="flex items-center gap-1">
                 <Image
                   onClick={() => handleLike()}
@@ -257,12 +284,12 @@ const EntryCard = ({
 
       {/* TODO: Delete thread */}
 
-      <AlertDialog>
+      {/*<AlertDialog>
         <AlertDialogTrigger asChild>
           <div
             className={`cursor-pointer translate-x-20 ${
               isOwner && "group-hover:translate-x-0"
-            } duration-500 ease-in-out absolute right-0 bottom-0 h-10 bg-red-600`}
+            } duration-500 ease-in-out absolute right-0 bottom-0 h-10 bg-red-800`}
           >
             <p className="text-white text-base-semibold text-center p-2">
               {isOwner && "Delete"}
@@ -284,7 +311,7 @@ const EntryCard = ({
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
-      </AlertDialog>
+      </AlertDialog>*/}
     </article>
   );
 };
