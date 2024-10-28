@@ -6,6 +6,7 @@ import { connectToDB } from "../mongoose";
 import BomQueue from "../models/bomQueue.model";
 import BookSession from "../models/bookSession.model";
 import Book from "../models/book.model";
+import { createVote } from "./activity.action";
 
 interface BomQueue {
   startDate: Date;
@@ -100,6 +101,9 @@ export async function handleSessionVote(
     });
 
     await bookSession.save();
+
+    //Create the activity to tell the owner of the queue that a member has voted
+    //await createVote(userId, bookSessionId);
 
     revalidatePath(path);
   } catch (error: any) {

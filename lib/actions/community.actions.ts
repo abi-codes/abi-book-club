@@ -19,6 +19,7 @@ import { IClubUser } from "../types/user";
 import { IBomQueue } from "../types/bomQueue";
 import Bom from "../models/bom.model";
 import { IBom } from "../types/bom";
+import { createQueuePublish } from "./activity.action";
 
 export async function createCommunity(
   name: string,
@@ -985,7 +986,10 @@ export async function publishBookQueue(
     connectToDB();
 
     // Find the queue by its unique id
-    const queue = await BomQueue.findOne({ id: queueId });
+    const queue = await BomQueue.findOne({ id: queueId }).populate({
+      path: "communityId",
+      model: Community,
+    });
 
     if (!queue) {
       throw new Error("Queue not found");
@@ -1007,7 +1011,15 @@ export async function publishBookQueue(
       queueId: queue._id,
     });
 
-    return queue;
+    await Community.findByIdAndUpdate(queue.communityId, {
+      $push: { threads: createEntry._id },
+    });
+
+    //create queue publish activity
+    createQueuePublish(
+      queue.communityId._id.toString(),
+      createEntry._id.toString()
+    );
   } catch (error) {
     // Handle any errors
     console.error("Error publishing queue:", error);
