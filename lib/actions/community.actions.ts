@@ -19,7 +19,7 @@ import { IClubUser } from "../types/user";
 import { IBomQueue } from "../types/bomQueue";
 import Bom from "../models/bom.model";
 import { IBom } from "../types/bom";
-import { createQueuePublish } from "./activity.action";
+import { createBomPublish, createQueuePublish } from "./activity.action";
 
 export async function createCommunity(
   name: string,
@@ -1004,21 +1004,25 @@ export async function publishBookQueue(
     // Save the updated queue
     await queue.save();
 
-    const createEntry = await Entry.create({
+    const createdEntry = await Entry.create({
       text: publishBlurb,
       author: userId,
       community: queue.communityId,
       queueId: queue._id,
     });
 
+    await User.findByIdAndUpdate(userId, {
+      $push: { threads: createdEntry._id },
+    });
+
     await Community.findByIdAndUpdate(queue.communityId, {
-      $push: { threads: createEntry._id },
+      $push: { threads: createdEntry._id },
     });
 
     //create queue publish activity
     createQueuePublish(
       queue.communityId._id.toString(),
-      createEntry._id.toString()
+      createdEntry._id.toString()
     );
   } catch (error) {
     // Handle any errors
@@ -1031,7 +1035,8 @@ export async function startReadingBookQueue(
   queueId: string,
   bookSessionId: string,
   startDate: Date,
-  endDate: Date
+  endDate: Date,
+  userId: string
 ) {
   try {
     connectToDB();
@@ -1060,7 +1065,27 @@ export async function startReadingBookQueue(
     // Save the updated queue
     await queue.save();
 
-    return queue;
+    //Create bom entry
+    const createdEntry = await Entry.create({
+      text: "Book of the month has been selected",
+      author: userId,
+      community: queue.communityId,
+      bomId: bom._id,
+    });
+
+    await User.findByIdAndUpdate(userId, {
+      $push: { threads: createdEntry._id },
+    });
+
+    await Community.findByIdAndUpdate(queue.communityId, {
+      $push: { threads: createdEntry._id },
+    });
+
+    //create bom activity
+    createBomPublish(
+      queue.communityId._id.toString(),
+      createdEntry._id.toString()
+    );
   } catch (error) {
     // Handle any errors
     console.error("Error publishing queue:", error);

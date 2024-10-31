@@ -29,6 +29,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { IBom } from "@/lib/types/bom";
 
 interface Props {
   id: string;
@@ -57,6 +58,7 @@ interface Props {
   likes: any;
   isComment?: boolean;
   queueId?: IBomQueue;
+  bomId?: IBom;
 }
 
 const CSEntryCard = ({
@@ -69,6 +71,7 @@ const CSEntryCard = ({
   likes,
   isComment,
   queueId,
+  bomId,
   currentUserId,
 }: Props) => {
   const router = useRouter();
@@ -166,7 +169,7 @@ const CSEntryCard = ({
                 <DropdownMenuTrigger>
                   <div className="hover:bg-gray-100 dark:hover:bg-dark-4 rounded-full p-2">
                     <Image
-                      src={"assets/menu-dots.svg"}
+                      src={"/assets/menu-dots.svg"}
                       alt="Menu icon"
                       width={14}
                       height={14}
@@ -207,6 +210,8 @@ const CSEntryCard = ({
                 isOwner={isOwner}
               />
             )}
+
+            {bomId && <div>{bomId.bookSession?.bookId?.title}</div>}
 
             {content.length > 400 && !isEntryPage && !handleContentCheck() && (
               <Link href={`/journal/${id}`}>

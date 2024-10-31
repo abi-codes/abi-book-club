@@ -1,3 +1,4 @@
+import { IBom } from "./bom";
 import { IBomQueue } from "./bomQueue";
 import { ICommunity } from "./community";
 import { Like } from "./like";
@@ -8,6 +9,7 @@ export interface IEntry {
   text: string;
   author: IUser;
   queueId?: IBomQueue;
+  bomId?: IBom;
   community: ICommunity;
   createdAt: Date;
   parentId: string;

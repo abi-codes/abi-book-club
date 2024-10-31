@@ -34,7 +34,7 @@ export default async function Home() {
                 <>
                   <EntryCard
                     key={post._id}
-                    id={post._id}
+                    id={post._id.toString()}
                     queueId={post?.queueId}
                     currentUserId={userInfo?.user?._id || ""}
                     content={post.text}

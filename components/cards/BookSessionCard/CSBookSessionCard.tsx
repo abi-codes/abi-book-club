@@ -21,13 +21,6 @@ const CSBookSessionCard = ({
   handleVote,
 }: Props) => {
   const hasVoted = bookSession.votes.some((x: any) => x == userId);
-
-  const pathname = usePathname();
-
-  // const handleVote = async (bookSessionId: string) => {
-  //   await handleSessionVote(queueId, bookSessionId, userId, pathname);
-  // };
-
   return (
     <div
       className="flex flex-row gap-4 sm:flex-col 

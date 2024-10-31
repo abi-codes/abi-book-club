@@ -18,6 +18,7 @@ import {
   removeThreadLike,
   removeThreadReply,
 } from "./activity.action";
+import Bom from "../models/bom.model";
 
 export async function fetchPosts(pageNumber = 1, pageSize = 20) {
   connectToDB();
@@ -63,6 +64,18 @@ export async function fetchPosts(pageNumber = 1, pageSize = 20) {
           },
         },
       ],
+    })
+    .populate({
+      path: "bomId",
+      model: Bom,
+      populate: {
+        path: "bookSession",
+        model: BookSession,
+        populate: {
+          path: "bookId",
+          model: Book,
+        },
+      },
     });
 
   // Count the total number of top-level posts (threads) i.e., threads that are not comments.

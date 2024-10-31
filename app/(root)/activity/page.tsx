@@ -106,7 +106,7 @@ async function Page() {
                   </p>
                 </article>
               </Link>
-            ) : (
+            ) : activity.notificationType === "vote" ? (
               <Link key={activity._id} href={`/journal/${activity.objectId}`}>
                 <article className="activity-card justify-between">
                   <div className="flex gap-3">
@@ -121,7 +121,30 @@ async function Page() {
                       <span className="mr-1 text-red-800">
                         {activity.creatorUser.name}
                       </span>{" "}
-                      published a new queue
+                      has voted
+                    </p>
+                  </div>
+                  <p className="!text-small-regular text-gray-400 dark:text-gray-600">
+                    {timeDifferenceForDate(activity.createdDate)} ago
+                  </p>
+                </article>
+              </Link>
+            ) : (
+              <Link key={activity._id} href={`/journal/${activity.objectId}`}>
+                <article className="activity-card justify-between">
+                  <div className="flex gap-3">
+                    <Image
+                      src={activity.creatorCommunity.image}
+                      alt="Profile picture"
+                      width={20}
+                      height={20}
+                      className="rounded-full object-cover"
+                    />
+                    <p className="!text-small-regular text-gray-800 dark:text-light-1">
+                      <span className="mr-1 text-red-800">
+                        {activity.creatorCommunity.name}
+                      </span>{" "}
+                      has added a new book of the month
                     </p>
                   </div>
                   <p className="!text-small-regular text-gray-400 dark:text-gray-600">

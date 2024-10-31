@@ -42,6 +42,7 @@ const Entries = ({ initialPosts, userId }: Props) => {
           key={post._id}
           id={post._id}
           queueId={post?.queueId}
+          bomId={post?.bomId}
           currentUserId={userId}
           content={post.text}
           author={{

@@ -106,7 +106,7 @@ export async function createBomPublish(
   objectId: string
 ) {
   const communityMembers = await Community.findOne({
-    id: creatorCommunity,
+    _id: creatorCommunity,
   }).select("members");
 
   for (const member of communityMembers.members) {
@@ -114,14 +114,34 @@ export async function createBomPublish(
   }
 }
 
-export async function createVote(creatorUser: string, objectId: string) {
+export async function removeVoteActivity(
+  creatorUser: string,
+  objectId: string
+) {
   const entry = await Entry.findOne({
-    id: objectId,
+    queueId: objectId,
+  }).select("author");
+
+  await removeActivity(
+    entry.author._id,
+    entry._id.toString(),
+    "vote",
+    creatorUser,
+    undefined
+  );
+}
+
+export async function createVoteActivity(
+  creatorUser: string,
+  objectId: string
+) {
+  const entry = await Entry.findOne({
+    queueId: objectId,
   }).select("author");
 
   await createActivity(
     entry.author._id,
-    objectId,
+    entry._id.toString(),
     "vote",
     creatorUser,
     undefined

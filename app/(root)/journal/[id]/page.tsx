@@ -19,27 +19,26 @@ const Page = async ({ params }: { params: { id: string } }) => {
 
   const entry = await fetchEntryById(params.id);
 
-  console.log("Queue id", entry.queueId);
   return (
     <section className="relative">
       <div>
         <CSEntryCard
-          key={entry._id}
-          id={entry._id}
+          key={entry._id.toString()}
+          id={entry._id.toString()}
           queueId={entry.queueId && JSON.parse(JSON.stringify(entry?.queueId))}
-          currentUserId={userInfo?.user._id || ""}
+          currentUserId={userInfo?.user._id.toString() || ""}
           parentId={entry.parentId}
           content={entry.text}
           author={{
             name: entry.author.name,
             image: entry.author.image,
             id: entry.author.id,
-            _id: entry.author._id,
+            _id: entry.author._id.toString(),
           }}
           community={
             entry.community
               ? {
-                  _id: entry.community._id,
+                  _id: entry.community._id.toString(),
                   id: entry.community.id,
                   name: entry.community.name,
                   image: entry.community.image,
@@ -54,7 +53,7 @@ const Page = async ({ params }: { params: { id: string } }) => {
       <div className="mt-7">
         <Comment
           entryId={entry.id}
-          currentUserImg={userInfo.user.image}
+          currentUserImg={userInfo.user.image ? userInfo.user.image : ""}
           currentUserId={JSON.stringify(userInfo.user._id)}
         />
       </div>
@@ -62,21 +61,21 @@ const Page = async ({ params }: { params: { id: string } }) => {
       <div className="mt-10">
         {entry.children.map((comment: any) => (
           <EntryCard
-            key={comment._id}
-            id={comment._id}
-            currentUserId={userInfo?.user._id || ""}
+            key={comment._id.toString()}
+            id={comment._id.toString()}
+            currentUserId={userInfo?.user._id.toString() || ""}
             parentId={comment.parentId}
             content={comment.text}
             author={{
               name: comment.author.name,
               image: comment.author.image,
               id: comment.author.id,
-              _id: comment.author._id,
+              _id: comment.author._id.toString(),
             }}
             community={
               comment.community
                 ? {
-                    _id: comment.community._id,
+                    _id: comment.community._id.toString(),
                     id: comment.community.id,
                     name: comment.community.name,
                     image: comment.community.image,
