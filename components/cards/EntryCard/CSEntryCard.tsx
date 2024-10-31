@@ -30,6 +30,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { IBom } from "@/lib/types/bom";
+import BoMCard from "../BoMCard";
 
 interface Props {
   id: string;
@@ -208,6 +209,15 @@ const CSEntryCard = ({
                 queue={queueId}
                 userId={currentUserId}
                 isOwner={isOwner}
+              />
+            )}
+
+            {bomId && (
+              <BoMCard
+                bom={bomId}
+                handleView={() => {
+                  console.log("what", bomId.startDate);
+                }}
               />
             )}
 
