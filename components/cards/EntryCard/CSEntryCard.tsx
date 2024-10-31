@@ -308,39 +308,6 @@ const CSEntryCard = ({
           )}
         </div>
       </div>
-
-      {/* TODO: Delete thread */}
-
-      {/* <AlertDialog>
-        <AlertDialogTrigger asChild>
-          <div
-            className={`cursor-pointer translate-x-20 ${
-              isOwner && "group-hover:translate-x-0"
-            } duration-500 ease-in-out absolute right-0 bottom-0 h-10 bg-red-600`}
-          >
-            <p className="text-white text-base-semibold text-center p-2">
-              {isOwner && "Delete"}
-            </p>
-          </div>
-        
-        
-         </AlertDialogTrigger>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete your
-              entry, all related comments and likes.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={() => handleDelete()}>
-              Continue
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog> */}
     </article>
   );
 };
