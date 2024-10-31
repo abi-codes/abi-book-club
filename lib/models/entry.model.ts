@@ -27,6 +27,10 @@ const entrySchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "BomQueue",
   },
+  bomId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Bom",
+  },
   bookId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Book",

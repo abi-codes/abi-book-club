@@ -29,6 +29,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { IBom } from "@/lib/types/bom";
+import BoMCard from "../BoMCard";
 
 interface Props {
   id: string;
@@ -57,6 +59,7 @@ interface Props {
   likes: any;
   isComment?: boolean;
   queueId?: IBomQueue;
+  bomId?: IBom;
 }
 
 const CSEntryCard = ({
@@ -69,6 +72,7 @@ const CSEntryCard = ({
   likes,
   isComment,
   queueId,
+  bomId,
   currentUserId,
 }: Props) => {
   const router = useRouter();
@@ -166,7 +170,7 @@ const CSEntryCard = ({
                 <DropdownMenuTrigger>
                   <div className="hover:bg-gray-100 dark:hover:bg-dark-4 rounded-full p-2">
                     <Image
-                      src={"assets/menu-dots.svg"}
+                      src={"/assets/menu-dots.svg"}
                       alt="Menu icon"
                       width={14}
                       height={14}
@@ -205,6 +209,15 @@ const CSEntryCard = ({
                 queue={queueId}
                 userId={currentUserId}
                 isOwner={isOwner}
+              />
+            )}
+
+            {bomId && (
+              <BoMCard
+                bom={bomId}
+                handleView={() => {
+                  console.log("what", bomId.startDate);
+                }}
               />
             )}
 
@@ -303,39 +316,6 @@ const CSEntryCard = ({
           )}
         </div>
       </div>
-
-      {/* TODO: Delete thread */}
-
-      {/* <AlertDialog>
-        <AlertDialogTrigger asChild>
-          <div
-            className={`cursor-pointer translate-x-20 ${
-              isOwner && "group-hover:translate-x-0"
-            } duration-500 ease-in-out absolute right-0 bottom-0 h-10 bg-red-600`}
-          >
-            <p className="text-white text-base-semibold text-center p-2">
-              {isOwner && "Delete"}
-            </p>
-          </div>
-        
-        
-         </AlertDialogTrigger>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete your
-              entry, all related comments and likes.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={() => handleDelete()}>
-              Continue
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog> */}
     </article>
   );
 };

@@ -6,7 +6,7 @@ import { connectToDB } from "../mongoose";
 import BomQueue from "../models/bomQueue.model";
 import BookSession from "../models/bookSession.model";
 import Book from "../models/book.model";
-import { createVote } from "./activity.action";
+import { createVoteActivity, removeVoteActivity } from "./activity.action";
 
 interface BomQueue {
   startDate: Date;
@@ -84,8 +84,13 @@ export async function handleSessionVote(
       var tmpVotes = bookSession.votes.filter((vote: any) => vote != userId);
 
       bookSession.votes = tmpVotes;
+
+      //Remove vote activity
+      removeVoteActivity(userId, queue._id);
     } else {
       bookSession.votes.push(userId);
+      //Add vote acitivity
+      createVoteActivity(userId, queue._id);
     }
 
     //Check if the user has already voted for a different book session in the same queue

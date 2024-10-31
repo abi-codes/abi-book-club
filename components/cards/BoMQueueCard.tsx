@@ -1,7 +1,7 @@
 "use client";
 
-import React, { use, useEffect, useState } from "react";
-import BookSessionCard from "./BookSessionCard";
+import React, { useState } from "react";
+// import BookSessionCard from "./BookSessionCard";
 import BookView from "./BookView";
 import { IBomQueue } from "@/lib/types/bomQueue";
 import {
@@ -187,7 +187,8 @@ const BoMQueueCard = ({ queue, userId, reloadQueue, isOwner }: Props) => {
       currentQueue.id,
       bookSession._id,
       startDate,
-      endDate
+      endDate,
+      userId
     );
 
     if (reloadQueue) {
@@ -381,16 +382,6 @@ const BoMQueueCard = ({ queue, userId, reloadQueue, isOwner }: Props) => {
         />
       )}
 
-      <ValidationModal
-        open={deleteConfirm}
-        close={() => setDeleteConfirm(false)}
-        handleSubmit={() => handleDeleteQueue()}
-        validationDescription="This will delete the queue and all its contents."
-        validationTitle="Are you absolutely sure?"
-        cancellationText="Cancel"
-        submitText="Delete"
-      />
-
       <PublishModal
         open={publishConfirm}
         close={() => setPublishConfirm(false)}
@@ -405,6 +396,16 @@ const BoMQueueCard = ({ queue, userId, reloadQueue, isOwner }: Props) => {
         validationTitle={publishErrorTitle}
         cancellationText={`Close`}
         submitText={`Ok`}
+      />
+
+      <ValidationModal
+        open={deleteConfirm}
+        close={() => setDeleteConfirm(false)}
+        handleSubmit={() => handleDeleteQueue()}
+        validationDescription="This will delete the queue and all its contents."
+        validationTitle="Are you absolutely sure?"
+        cancellationText="Cancel"
+        submitText="Delete"
       />
     </div>
   );
