@@ -1,5 +1,6 @@
 import { IBom } from "@/lib/types/bom";
 import { IBook } from "@/lib/types/book";
+import Link from "next/link";
 import React from "react";
 
 interface Props {
@@ -7,9 +8,9 @@ interface Props {
   handleView: (book: IBook) => void;
 }
 
-const BoMCard = ({ bom, handleView }: Props) => {
+const BoMCard = ({ bom }: Props) => {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col justify-center items-center">
       <div className="relative h-32 w-20 sm:h-40 sm:w-28">
         <img
           src={bom.bookSession.bookId.cover}
@@ -31,8 +32,8 @@ const BoMCard = ({ bom, handleView }: Props) => {
           {bom.bookSession.bookId.authors[0]}
         </p>
       </div>
-      <div className="flex justify-between sm:justify-around mt-2">
-        <div className="flex gap-1">
+      <div className="flex justify-between sm:justify-between mt-2 w-28">
+        <div className="flex">
           <div className="cursor-pointer">
             <img src="/assets/heart-filled.svg" alt="heart" />
           </div>
@@ -41,12 +42,13 @@ const BoMCard = ({ bom, handleView }: Props) => {
           </p>
         </div>
         <div className="flex">
-          <div
+          <Link
+            href={`/books/${bom.bookSession.bookId.id}`}
+            passHref
             className="cursor-pointer"
-            onClick={() => handleView(bom.bookSession.bookId)}
           >
             <img src="/assets/eye.svg" alt="eye" width={25} height={25} />
-          </div>
+          </Link>
         </div>
       </div>
     </div>

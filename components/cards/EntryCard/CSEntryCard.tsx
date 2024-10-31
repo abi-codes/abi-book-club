@@ -221,8 +221,6 @@ const CSEntryCard = ({
               />
             )}
 
-            {bomId && <div>{bomId.bookSession?.bookId?.title}</div>}
-
             {content.length > 400 && !isEntryPage && !handleContentCheck() && (
               <Link href={`/journal/${id}`}>
                 <p className="mt-1 cursor-pointer text-blue hover:underline">
