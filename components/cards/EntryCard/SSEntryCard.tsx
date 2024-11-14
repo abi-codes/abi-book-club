@@ -120,9 +120,6 @@ const EntryCard = ({
       } `}
     >
       <div className="flex w-full flex-1 flex-row gap-4 p-4">
-        <p className=" meta-info !text-small-regular absolute right-4">
-          {timeDifferenceForDate(new Date(createdAt))} ago
-        </p>
         <div className="flex w-full flex-col">
           <div className="flex flex-row gap-3 mb-3">
             <Link
@@ -143,7 +140,9 @@ const EntryCard = ({
               </h4>
             </Link>
           </div>
-
+          <p className="meta-info !text-small-regular">
+            {timeDifferenceForDate(new Date(createdAt))} ago
+          </p>
           <div
             className={`${
               isComment && "mb-5"
