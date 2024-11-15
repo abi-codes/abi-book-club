@@ -11,6 +11,7 @@ import BookshelfTab from "./bookshelf-tab";
 import BomTab from "./bom-tab";
 import ClubsTab from "./clubs-tab";
 import { useRouter, useSearchParams } from "next/navigation";
+import FollowersTab from "./followers-tab";
 
 interface Props {
   id: string;
@@ -51,6 +52,7 @@ const OwnedProfile = ({ id, userInfo, isOwner, isFollowing }: Props) => {
       {currentTab === "Bookshelf" && <BookshelfTab user={userInfo} />}
       {currentTab === "BoM" && <BomTab user={userInfo} />}
       {currentTab === "Clubs" && <ClubsTab user={userInfo} />}
+      {currentTab === "Followers" && <FollowersTab user={userInfo} />}
     </div>
   );
 };

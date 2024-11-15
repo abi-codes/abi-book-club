@@ -13,17 +13,24 @@ import ProfileSidebar from "@/components/shared/ProfileSidebar";
 import { IUser } from "@/lib/types/user";
 
 interface Props {
+  currentUserId: string;
   id: string;
   userInfo: IUser;
   isOwner: boolean;
   isFollowing: boolean;
 }
-async function Profile({ id, userInfo, isOwner, isFollowing }: Props) {
+async function Profile({
+  id,
+  currentUserId,
+  userInfo,
+  isOwner,
+  isFollowing,
+}: Props) {
   return (
     <div className="flex-1">
       <ProfileHeader
-        accountId={userInfo.id}
-        authUserId={id}
+        accountId={currentUserId}
+        authUserId={userInfo.id}
         name={userInfo.name}
         surname={userInfo.surname}
         username={userInfo.username}
