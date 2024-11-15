@@ -3,6 +3,42 @@ import Community from "../models/community.model";
 import Entry from "../models/entry.model";
 import User from "../models/user.model";
 
+function splitActivitiesByDate(activities: any[]) {
+  const splitActivities: {
+    today: any[];
+    week: any[];
+    month: any[];
+    year: any[];
+    old: any;
+  } = {
+    today: [],
+    week: [],
+    month: [],
+    year: [],
+    old: [],
+  };
+
+  const now = new Date();
+
+  for (var activity of activities) {
+    const activityDate = new Date(activity.createdDate);
+    const diffTime = Math.abs(now.getTime() - activityDate.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays <= 1) {
+      splitActivities.today.push(activity);
+    } else if (diffDays <= 7) {
+      splitActivities.week.push(activity);
+    } else if (diffDays <= 30) {
+      splitActivities.month.push(activity);
+    } else {
+      splitActivities.year.push(activity);
+    }
+  }
+
+  return splitActivities;
+}
+
 export async function fetchActivities(userId: string) {
   const activities = await Activity.find({ recieverUser: userId })
     .populate({
@@ -19,7 +55,12 @@ export async function fetchActivities(userId: string) {
       createdDate: "desc",
     });
 
-  return activities;
+  //write a method to split the activity at significant date period (i.e. 1 day, 1 week, 1 month, 1 year)
+
+  const splitActivities = splitActivitiesByDate(activities);
+  //return the split activities
+
+  return splitActivities;
 }
 
 export async function createActivity(

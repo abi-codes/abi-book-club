@@ -896,3 +896,43 @@ export async function fetchUserFollowRequests({
     throw error;
   }
 }
+
+export async function declineFollowRequest(
+  userId: string,
+  userToDeclineId: string
+) {
+  try {
+    connectToDB();
+    const user = await User.findOne({ _id: userId });
+
+    user.followRequests.pull(userToDeclineId);
+
+    await user.save();
+  } catch (error) {
+    console.error("Error fetching user communities:", error);
+    throw error;
+  }
+}
+
+export async function appproveFollowRequest(
+  userId: string,
+  userToApproveId: string
+) {
+  try {
+    connectToDB();
+
+    const user = await User.findOne({ _id: userId });
+    const userToApprove = await User.findOne({ _id: userToApproveId });
+
+    user.followRequests.pull(userToApproveId);
+
+    user.followers.push(userToApproveId);
+    userToApprove.following.push(userId);
+
+    await user.save();
+    await userToApprove.save();
+  } catch (error) {
+    console.error("Error fetching user communities:", error);
+    throw error;
+  }
+}
