@@ -9,7 +9,7 @@ import EntriesTab from "@/components/shared/EntriesTab";
 
 import Bookshelf from "@/components/shared/Bookshelf";
 import UserCard from "@/components/cards/UserCard";
-import ProfileSidebar from "@/components/shared/ProfileSidebar";
+import ProfileTopbar from "@/components/shared/ProfileTopbar";
 import { IUser } from "@/lib/types/user";
 
 interface Props {
@@ -22,13 +22,13 @@ async function Profile({ id, userInfo, isOwner, isFollowing }: Props) {
   return (
     <div className="flex-1">
       <ProfileHeader
-        accountId={userInfo.id}
+        accountId={userInfo.id || ""}
         authUserId={id}
-        name={userInfo.name}
+        name={userInfo.name || ""}
         surname={userInfo.surname}
-        username={userInfo.username}
-        imgUrl={userInfo.image}
-        bio={userInfo.bio}
+        username={userInfo.username || ""}
+        imgUrl={userInfo.image || ""}
+        bio={userInfo.bio || ""}
         occupation={userInfo.occupation}
         isOwner={isOwner}
         isFollowing={isFollowing}
@@ -125,7 +125,7 @@ async function Profile({ id, userInfo, isOwner, isFollowing }: Props) {
           >
             <Bookshelf
               shelf={JSON.parse(JSON.stringify(userInfo.bookshelf))}
-              userId={userInfo.id}
+              userId={userInfo.id || ""}
               isOwner={isOwner}
             />
           </TabsContent>

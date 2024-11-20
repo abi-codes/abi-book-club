@@ -1,7 +1,7 @@
 "use client";
 
 import React, { use, useEffect, useState } from "react";
-import ProfileSidebar from "../shared/ProfileSidebar";
+import ProfileTopbar from "../shared/ProfileTopbar";
 import Profile from "./profile";
 import { IUser } from "@/lib/types/user";
 import GeneralTab from "./general-tab";
@@ -40,7 +40,7 @@ const OwnedProfile = ({ id, userInfo, isOwner, isFollowing }: Props) => {
   };
   return (
     <div className="flex-1 flex-col w-full">
-      <ProfileSidebar
+      <ProfileTopbar
         defaultValue={currentTab}
         setCurrentTab={(currentTab) => {
           handleSetTab(currentTab);
