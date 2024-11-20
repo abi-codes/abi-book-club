@@ -29,6 +29,12 @@
   }
 
   /* Forms */
+
+  /* Profile Section Heading */
+  .profile-heading {
+    @apply text-heading3-bold dark:text-white;
+  }
+
   .form-label {
     @apply text-base-semibold  text-slate-700 dark:text-gray-300;
   }
@@ -168,7 +174,7 @@
 }
 
 .account-form_input {
-  @apply border dark:border-dark-4 dark:bg-dark-3 dark:text-light-1 !important;
+  @apply border dark:border-gray-500 dark:bg-dark-2 dark:text-light-1 !important;
 }
 
 /* Comment Form */
