@@ -43,6 +43,11 @@
     @apply no-focus text-slate-700 dark:text-gray-300;
   }
 
+  /* Profile Section Checkbox */
+  .checkbox-label {
+    @apply font-medium dark:text-white leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70;
+  }
+
   /* Community Card */
   .community-card {
     @apply w-full rounded-lg bg-dark-3 px-4 py-5 sm:w-96;
