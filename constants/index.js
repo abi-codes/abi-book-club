@@ -73,8 +73,8 @@ export const profileTopbarLinks = [
     label: "Profile",
   },
   {
-    imgURL: "/assets/profile/bookshelf.svg",
-    dimgURL: "/assets/profile/bookshelf-w.svg",
+    imgURL: "/assets/profile/shelf.svg",
+    dimgURL: "/assets/profile/shelf-w.svg",
     route: "/bookshelf",
     label: "Bookshelf",
   },
