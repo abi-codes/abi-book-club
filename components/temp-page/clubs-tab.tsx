@@ -10,8 +10,8 @@ interface Props {
 const ClubsTab = ({ user }: Props) => {
   return (
     <div className="flex flex-col gap-8">
-      <ClubDetails userId={user.id} _userId={user._id} />
-      <PendingRequest userId={user.id} _userId={user._id} />
+      <ClubDetails userId={user.id || ""} _userId={user._id} />
+      <PendingRequest userId={user.id || ""} _userId={user._id} />
     </div>
   );
 };

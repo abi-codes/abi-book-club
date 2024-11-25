@@ -10,9 +10,9 @@ interface Props {
 const BomTab = ({ user }: Props) => {
   return (
     <section className="flex flex-col gap-8">
-      <QueueDetails _userId={user._id} userId={user.id} />
+      <QueueDetails _userId={user._id} userId={user.id || ""} />
 
-      <BomDetails _userId={user._id} userId={user.id} />
+      <BomDetails _userId={user._id} userId={user.id || ""} />
     </section>
   );
 };
