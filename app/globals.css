@@ -43,6 +43,10 @@
     @apply no-focus text-slate-700 dark:text-gray-300;
   }
 
+  .profile-btn {
+    @apply bg-red-800 hover:bg-red-900 dark:hover:bg-red-900 dark:bg-red-800 dark:text-white;
+  }
+
   /* Profile Section Checkbox */
   .checkbox-label {
     @apply font-medium dark:text-white leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70;

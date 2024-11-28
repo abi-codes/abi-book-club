@@ -149,8 +149,8 @@ const BasicDetails = ({ user }: Props) => {
             control={form.control}
             name="name"
             render={({ field }) => (
-              <FormItem className="flex w-full flex-col gap-3">
-                <FormLabel className="form-label">Name</FormLabel>
+              <FormItem className="flex w-full flex-col gap-3 py-2">
+                <FormLabel className="form-label pt-4">Name</FormLabel>
                 <FormControl>
                   <Input
                     type="text"
@@ -167,7 +167,7 @@ const BasicDetails = ({ user }: Props) => {
             control={form.control}
             name="surname"
             render={({ field }) => (
-              <FormItem className="flex w-full flex-col gap-3">
+              <FormItem className="flex w-full flex-col gap-3 py-2">
                 <FormLabel className="form-label">Surname</FormLabel>
                 <FormControl>
                   <Input
@@ -185,7 +185,7 @@ const BasicDetails = ({ user }: Props) => {
             control={form.control}
             name="username"
             render={({ field }) => (
-              <FormItem className="flex w-full flex-col gap-3">
+              <FormItem className="flex w-full flex-col gap-3 py-2">
                 <FormLabel className="form-label">Username</FormLabel>
                 <FormControl>
                   <Input
@@ -203,7 +203,7 @@ const BasicDetails = ({ user }: Props) => {
             control={form.control}
             name="email"
             render={({ field }) => (
-              <FormItem className="flex w-full flex-col gap-3">
+              <FormItem className="flex w-full flex-col gap-3 py-2">
                 <FormLabel className="form-label">Email</FormLabel>
                 <FormControl>
                   <Input
@@ -220,7 +220,7 @@ const BasicDetails = ({ user }: Props) => {
 
           <Button
             type="submit"
-            className="bg-red-800 dark:bg-red-800 dark:text-white"
+            className="bg-red-800 hover:bg-red-900 dark:hover:bg-red-900 dark:bg-red-800 dark:text-white"
             disabled={form.formState.isSubmitting || isLoading}
           >
             {form.formState.isSubmitting || isLoading ? "Submitting" : "Save"}

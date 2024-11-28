@@ -49,7 +49,7 @@ const DeleteAccount = ({ user }: Props) => {
         </div>
 
         <Button
-          className="bg-red-800 dark:bg-red-800 dark:text-white"
+          className="bg-red-800 hover:bg-red-900 dark:hover:bg-red-900 dark:bg-red-800 dark:text-white"
           onClick={() => setIsDeleted(true)}
         >
           Delete account
