@@ -38,17 +38,20 @@ const DeleteAccount = ({ user }: Props) => {
       className="flex max-sm:flex-col gap-10 border border-solid
      border-gray-300-400 rounded-xl p-5 shadow-sm"
     >
-      <h1 className="text-heading3-bold">Delete profile</h1>
+      <h1 className="profile-heading">Delete profile</h1>
 
       <div className="flex flex-col flex-1 gap-6">
         <div className="flex flex-col">
-          <label className="text-small-semibold">
+          <label className="text-small-semibold dark:text-white">
             Delete your account and all associated data. Be careful, this action
             is irreversible.
           </label>
         </div>
 
-        <Button className="bg-red-800" onClick={() => setIsDeleted(true)}>
+        <Button
+          className="bg-red-800 hover:bg-red-900 dark:hover:bg-red-900 dark:bg-red-800 dark:text-white"
+          onClick={() => setIsDeleted(true)}
+        >
           Delete account
         </Button>
       </div>

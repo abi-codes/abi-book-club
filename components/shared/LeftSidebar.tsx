@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation"; // Next.js navigation hooks
 import { SignOutButton, SignedIn, useAuth } from "@clerk/nextjs"; // Clerk authentication library
-import { useContext, useEffect, useState } from "react"; // React hooks
+import { useContext } from "react"; // React hooks
 import MyThemeContext from "@/store/ThemeContext"; // Custom context for theme
 
 function LeftSidebar() {

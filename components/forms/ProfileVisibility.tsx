@@ -34,12 +34,14 @@ const ProfileVisisbility = ({ user }: Props) => {
       className="flex max-sm:flex-col gap-10 border border-solid
      border-gray-300-400 rounded-xl p-5 shadow-sm"
     >
-      <h1 className="text-heading3-bold">Profile visibility</h1>
+      <h1 className="profile-heading">Profile visibility</h1>
 
       <div className="flex flex-1 gap-6 justify-between items-center">
         <div className="flex flex-col">
-          <label className="text-body1-bold">Make profile private</label>
-          <label className="text-small-regular">
+          <label className="text-body1-bold dark:text-white">
+            Make profile private
+          </label>
+          <label className="text-small-regular dark:text-white">
             Only allow followers to access content you share. (This does not
             apply to content shared in public groups)
           </label>

@@ -59,37 +59,30 @@ const ClubDetails = ({ _userId, userId }: Props) => {
    border-gray-300-400 rounded-xl p-5 shadow-sm"
     >
       <div className="flex flex-col gap-5">
-        <h1 className="text-heading3-bold">Club list</h1>
-        <p className="text-small-medium w-48">
+        <h1 className="profile-heading">Club list</h1>
+        <p className="meta-info text-small-medium w-48">
           Your community of book lovers all in one area
         </p>
         <div className="flex flex-col gap-4">
-          <p className="text-black dark:text-light-1 text-sm">Filters</p>
+          <p className="text-body-bold text-black dark:text-light-1 text-sm">
+            Filters
+          </p>
           <div className="flex flex-col gap-4">
             <div className="flex items-center space-x-2">
               <Checkbox id="terms" />
-              <label
-                htmlFor="terms"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
+              <label htmlFor="terms" className="text-sm checkbox-label">
                 Has notifications
               </label>
             </div>
             <div className="flex items-center space-x-2">
               <Checkbox id="terms" />
-              <label
-                htmlFor="terms"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
+              <label htmlFor="terms" className="text-sm checkbox-label">
                 Lastest
               </label>
             </div>
             <div className="flex items-center space-x-2">
               <Checkbox id="terms" />
-              <label
-                htmlFor="terms"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
+              <label htmlFor="terms" className="text-sm checkbox-label">
                 Oldest
               </label>
             </div>
@@ -98,7 +91,10 @@ const ClubDetails = ({ _userId, userId }: Props) => {
       </div>
 
       <div className="flex flex-col flex-1 gap-6">
-        <Button className="bg-red-800" onClick={() => toggleNewClub()}>
+        <Button
+          className="bg-red-800 dark:bg-red-800 dark:text-white"
+          onClick={() => toggleNewClub()}
+        >
           Add club
         </Button>
         <div className="grid grid-cols-3 max-lg:grid-cols-2 max-sm:grid-cols-2 gap-12">
@@ -115,7 +111,9 @@ const ClubDetails = ({ _userId, userId }: Props) => {
             ))}
         </div>
         {isLoading && <p>Loading...</p>}
-        {!isLoading && userClublist.length === 0 && <p>No Clubs</p>}
+        {!isLoading && userClublist.length === 0 && (
+          <p className="meta-info">No Clubs</p>
+        )}
         <div className="flex items-center justify-between">
           <div className="max-sm:hidden"></div>
           <div className="flex items-center gap-7">
@@ -126,7 +124,7 @@ const ClubDetails = ({ _userId, userId }: Props) => {
             >
               {"<"}
             </Button>
-            <p>
+            <p className="dark:text-white">
               {currentPage} of {totalPages} page(s)
             </p>
             <Button

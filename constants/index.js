@@ -59,34 +59,34 @@ export const profileTabs = [
   { value: "entries", label: "Entries", icon: "/assets/reply.svg" },
 ];
 
-export const profileSidebarLinks = [
+export const profileTopbarLinks = [
   {
-    imgURL: "/assets/members.svg",
-    dimgURL: "/assets/general-w.svg",
+    imgURL: "/assets/profile/gear.svg",
+    dimgURL: "/assets/profile/gear-w.svg",
     route: "/general",
     label: "General",
   },
   {
-    imgURL: "/assets/members.svg",
-    dimgURL: "/assets/general-w.svg",
+    imgURL: "/assets//profile/profile.svg",
+    dimgURL: "/assets/profile/profile-w.svg",
     route: "/profile",
     label: "Profile",
   },
   {
-    imgURL: "/assets/members.svg",
-    dimgURL: "/assets/general-w.svg",
+    imgURL: "/assets/profile/shelf.svg",
+    dimgURL: "/assets/profile/shelf-w.svg",
     route: "/bookshelf",
     label: "Bookshelf",
   },
   {
-    imgURL: "/assets/members.svg",
-    dimgURL: "/assets/general-w.svg",
+    imgURL: "/assets/profile/calender.svg",
+    dimgURL: "/assets/profile/calender-w.svg",
     route: "/bom",
     label: "BoM",
   },
   {
-    imgURL: "/assets/members.svg",
-    dimgURL: "/assets/general-w.svg",
+    imgURL: "/assets/profile/clubs.svg",
+    dimgURL: "/assets/profile/clubs-w.svg",
     route: "/general",
     label: "Clubs",
   },

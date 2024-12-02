@@ -106,7 +106,7 @@ const ProfileDetails = ({ user }: Props) => {
       className="flex max-sm:flex-col gap-10 border border-solid
      border-gray-300-400 rounded-xl p-5 shadow-sm"
     >
-      <h1 className="text-heading3-bold">Profile details</h1>
+      <h1 className="profile-heading">Profile details</h1>
       <Form {...form}>
         <form
           className="flex flex-1 flex-col gap-2"
