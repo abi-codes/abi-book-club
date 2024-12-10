@@ -6,10 +6,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { profileTabs } from "@/constants";
 import Image from "next/image";
 import EntriesTab from "@/components/shared/EntriesTab";
-
 import Bookshelf from "@/components/shared/Bookshelf";
 import UserCard from "@/components/cards/UserCard";
-import ProfileSidebar from "@/components/shared/ProfileSidebar";
 import { IUser } from "@/lib/types/user";
 
 interface Props {
@@ -30,12 +28,15 @@ async function Profile({
     <div className="flex-1">
       <ProfileHeader
         accountId={currentUserId}
-        authUserId={userInfo.id}
-        name={userInfo.name}
+        // authUserId={userInfo.id}
+        //name={userInfo.name}
+        //accountId={userInfo.id || ""}
+        authUserId={id}
+        name={userInfo.name || ""}
         surname={userInfo.surname}
-        username={userInfo.username}
-        imgUrl={userInfo.image}
-        bio={userInfo.bio}
+        username={userInfo.username || ""}
+        imgUrl={userInfo.image || ""}
+        bio={userInfo.bio || ""}
         occupation={userInfo.occupation}
         isOwner={isOwner}
         isFollowing={isFollowing}
@@ -132,7 +133,7 @@ async function Profile({
           >
             <Bookshelf
               shelf={JSON.parse(JSON.stringify(userInfo.bookshelf))}
-              userId={userInfo.id}
+              userId={userInfo.id || ""}
               isOwner={isOwner}
             />
           </TabsContent>

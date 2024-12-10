@@ -10,7 +10,7 @@ import EntriesTab from "@/components/shared/EntriesTab";
 
 import Bookshelf from "@/components/shared/Bookshelf";
 import UserCard from "@/components/cards/UserCard";
-import ProfileSidebar from "@/components/shared/ProfileSidebar";
+import ProfileTopbar from "@/components/shared/ProfileTopbar";
 import Profile from "@/components/temp-page/profile";
 import OwnedProfile from "@/components/temp-page/owned-profile";
 

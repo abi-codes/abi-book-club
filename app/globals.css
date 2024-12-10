@@ -29,12 +29,27 @@
   }
 
   /* Forms */
+
+  /* Profile Section Heading */
+  .profile-heading {
+    @apply text-heading3-bold dark:text-white;
+  }
+
   .form-label {
     @apply text-base-semibold  text-slate-700 dark:text-gray-300;
   }
 
   .form-input {
     @apply no-focus text-slate-700 dark:text-gray-300;
+  }
+
+  .profile-btn {
+    @apply bg-red-800 hover:bg-red-900 dark:hover:bg-red-900 dark:bg-red-800 dark:text-white;
+  }
+
+  /* Profile Section Checkbox */
+  .checkbox-label {
+    @apply font-medium dark:text-white leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70;
   }
 
   /* Community Card */
@@ -168,7 +183,7 @@
 }
 
 .account-form_input {
-  @apply border dark:border-dark-4 dark:bg-dark-3 dark:text-light-1 !important;
+  @apply border dark:border-gray-500 dark:bg-dark-2 dark:text-light-1 !important;
 }
 
 /* Comment Form */

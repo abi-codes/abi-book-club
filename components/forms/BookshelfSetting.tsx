@@ -93,12 +93,14 @@ const BookshelfSetting = ({ _userId, userId }: Props) => {
                  border-gray-300-400 rounded-xl p-5 shadow-sm"
     >
       <div className="flex flex-col gap-5">
-        <h1 className="text-heading3-bold">Bookshelf</h1>
-        <p className="text-small-medium w-48">
+        <h1 className="profile-heading">Bookshelf</h1>
+        <p className="text-small-medium w-48 meta-info">
           Tell us more about your interest by curating and awesome bookshelf
         </p>
         <div className="flex flex-col gap-4">
-          <p className="text-black dark:text-light-1 text-sm">Filters</p>
+          <p className="text-black text-body-bold dark:text-light-1 text-sm">
+            Filters
+          </p>
           <div className="flex flex-col gap-4">
             <div className="flex items-center space-x-2">
               <Checkbox
@@ -106,10 +108,7 @@ const BookshelfSetting = ({ _userId, userId }: Props) => {
                 checked={categoryFilters.includes("haveRead")}
                 onCheckedChange={() => selectCategory("haveRead")}
               />
-              <label
-                htmlFor="haveRead"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
+              <label htmlFor="haveRead" className="text-sm checkbox-label">
                 Have reads
               </label>
             </div>
@@ -119,10 +118,7 @@ const BookshelfSetting = ({ _userId, userId }: Props) => {
                 checked={categoryFilters.includes("reading")}
                 onCheckedChange={() => selectCategory("reading")}
               />
-              <label
-                htmlFor="reading"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
+              <label htmlFor="reading" className="text-sm checkbox-label">
                 Currently reading
               </label>
             </div>
@@ -132,10 +128,7 @@ const BookshelfSetting = ({ _userId, userId }: Props) => {
                 checked={categoryFilters.includes("toRead")}
                 onCheckedChange={() => selectCategory("toRead")}
               />
-              <label
-                htmlFor="toRead"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
+              <label htmlFor="toRead" className="text-sm checkbox-label">
                 Want to read
               </label>
             </div>
@@ -144,7 +137,10 @@ const BookshelfSetting = ({ _userId, userId }: Props) => {
       </div>
 
       <div className="flex flex-col flex-1 gap-6">
-        <Button className="bg-red-800" onClick={() => handleEditItem(null)}>
+        <Button
+          className="bg-red-800 dark:bg-red-800 dark:text-white"
+          onClick={() => handleEditItem(null)}
+        >
           Add book
         </Button>
         {isLoading ? (
@@ -165,7 +161,7 @@ const BookshelfSetting = ({ _userId, userId }: Props) => {
                 />
               ))
             ) : (
-              <p>No books found</p>
+              <p className="meta-info">No books found</p>
             )}
           </div>
         )}
@@ -179,7 +175,7 @@ const BookshelfSetting = ({ _userId, userId }: Props) => {
             >
               {"<"}
             </Button>
-            <p>
+            <p className="dark:text-white">
               {currentPage} of {totalPages} page(s)
             </p>
             <Button
@@ -199,8 +195,8 @@ const BookshelfSetting = ({ _userId, userId }: Props) => {
                     key={page}
                     className={`${
                       currentPage === page
-                        ? "bg-red-800 text-white"
-                        : "bg-gray-200 text-black"
+                        ? "bg-red-800 text-white dark:bg-red-800 dark:text-white"
+                        : "bg-gray-200 text-black dark:bg-gray-200 dark:text-black"
                     }`}
                     onClick={() => setPage(page)}
                   >

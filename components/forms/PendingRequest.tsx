@@ -75,8 +75,8 @@ const PendingRequest = ({ _userId, userId }: Props) => {
    border-gray-300-400 rounded-xl p-5 shadow-sm"
     >
       <div className="flex flex-col gap-5">
-        <h1 className="text-heading3-bold">Pending requests</h1>
-        <p className="text-small-medium w-48">
+        <h1 className="profile-heading">Pending requests</h1>
+        <p className="meta-info text-small-medium w-48">
           Your community is trying to reach out
         </p>
         <div className="flex flex-col gap-4">
@@ -90,19 +90,13 @@ const PendingRequest = ({ _userId, userId }: Props) => {
             />
             <div className="flex items-center space-x-2">
               <Checkbox id="terms" />
-              <label
-                htmlFor="terms"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
+              <label htmlFor="terms" className="text-sm checkbox-label">
                 Lastest
               </label>
             </div>
             <div className="flex items-center space-x-2">
               <Checkbox id="terms" />
-              <label
-                htmlFor="terms"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
+              <label htmlFor="terms" className="text-sm checkbox-label">
                 Oldest
               </label>
             </div>
@@ -200,7 +194,7 @@ const PendingRequest = ({ _userId, userId }: Props) => {
         </div>
         {isLoading && <p>Loading...</p>}
         {!isLoading && memberList.length === 0 && (
-          <p>No pending requests or members </p>
+          <p className="meta-info">No pending requests or members </p>
         )}
         {memberList.length !== 0 && (
           <div className="flex items-center justify-between">

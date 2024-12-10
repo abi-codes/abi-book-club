@@ -69,8 +69,8 @@ const QueueDetails = ({ _userId, userId }: Props) => {
    border-gray-300-400 rounded-xl p-5 shadow-sm"
     >
       <div className="flex flex-col gap-5">
-        <h1 className="text-heading3-bold">Queues</h1>
-        <p className="text-small-medium w-48">
+        <h1 className="profile-heading">Queues</h1>
+        <p className=" meta-info text-small-medium w-48">
           Manage all your book club queues in one place
         </p>
         <div className={`flex flex-col gap-4 `}>
@@ -90,7 +90,7 @@ const QueueDetails = ({ _userId, userId }: Props) => {
           >
             Show advanced filters
           </p>
-          <p className="hidden sm:block text-black dark:text-light-1 text-sm">
+          <p className="hidden text-body-bold sm:block text-black dark:text-light-1 text-sm">
             Filters
           </p>
           <div
@@ -112,10 +112,7 @@ const QueueDetails = ({ _userId, userId }: Props) => {
                       selectFilter(`club|${community?._id}`)
                     }
                   />
-                  <label
-                    htmlFor="terms"
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  >
+                  <label htmlFor="terms" className="text-sm checkbox-label">
                     {community?.name}
                   </label>
                 </div>
@@ -127,10 +124,7 @@ const QueueDetails = ({ _userId, userId }: Props) => {
                 checked={queueFilters.includes(`status|Draft`)}
                 onCheckedChange={() => selectFilter(`status|Draft`)}
               />
-              <label
-                htmlFor="terms"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
+              <label htmlFor="terms" className="text-sm checkbox-label">
                 Draft
               </label>
             </div>
@@ -140,10 +134,7 @@ const QueueDetails = ({ _userId, userId }: Props) => {
                 checked={queueFilters.includes(`status|Voting`)}
                 onCheckedChange={() => selectFilter(`status|Voting`)}
               />
-              <label
-                htmlFor="terms"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
+              <label htmlFor="terms" className="text-sm checkbox-label">
                 Voting
               </label>
             </div>
@@ -153,10 +144,7 @@ const QueueDetails = ({ _userId, userId }: Props) => {
                 checked={queueFilters.includes(`status|Published`)}
                 onCheckedChange={() => selectFilter(`status|Published`)}
               />
-              <label
-                htmlFor="terms"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
+              <label htmlFor="terms" className="text-sm checkbox-label">
                 Published
               </label>
             </div>
@@ -166,10 +154,7 @@ const QueueDetails = ({ _userId, userId }: Props) => {
                 checked={queueFilters.includes(`status|Completed`)}
                 onCheckedChange={() => selectFilter(`status|Completed`)}
               />
-              <label
-                htmlFor="terms"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
+              <label htmlFor="terms" className="text-sm checkbox-label">
                 Closed
               </label>
             </div>
@@ -178,7 +163,10 @@ const QueueDetails = ({ _userId, userId }: Props) => {
       </div>
 
       <div className="flex flex-col flex-1 gap-6">
-        <Button className="bg-red-800" onClick={() => handleAddQueue()}>
+        <Button
+          className="bg-red-800 dark:bg-red-800 dark:text-white"
+          onClick={() => handleAddQueue()}
+        >
           Add queue
         </Button>
 

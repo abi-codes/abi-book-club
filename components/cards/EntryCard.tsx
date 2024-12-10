@@ -150,6 +150,9 @@ const EntryCard = ({
                 {author.name}
               </h4>
             </Link>
+            <p className=" meta-info !text-small-regular">
+              {timeDifferenceForDate(new Date(createdAt))} ago
+            </p>
 
             <div className="absolute right-10">
               <DropdownMenu>
@@ -203,9 +206,6 @@ const EntryCard = ({
 
           <div className={`${isComment && "mb-10"} mt-5 flex flex-col gap-3`}>
             <div className="flex items-center gap-3.5">
-              <p className=" meta-info !text-small-regular absolute right-4">
-                {timeDifferenceForDate(new Date(createdAt))} ago
-              </p>
               <div className="flex items-center gap-1">
                 <Image
                   onClick={() => handleLike()}
