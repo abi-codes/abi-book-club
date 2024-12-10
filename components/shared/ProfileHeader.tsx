@@ -8,21 +8,9 @@ import {
   updateCommunityInfo,
 } from "@/lib/actions/community.actions";
 import { usePathname } from "next/navigation";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "../ui/alert-dialog";
-
 import EditProfileModal from "../custom-ui/EditProfileModal";
 import AddressModal from "../custom-ui/AddressModal";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import MyThemeContext from "@/store/ThemeContext";
 import { followUser, unfollowUser } from "@/lib/actions/user.actions";
 
@@ -80,11 +68,11 @@ const ProfileHeader = ({
   };
 
   const follow = async () => {
-    await followUser(authUserId, accountId, pathName);
+    await followUser(accountId, authUserId, pathName);
   };
 
   const unfollow = async () => {
-    await unfollowUser(authUserId, accountId, pathName);
+    await unfollowUser(accountId, authUserId, pathName);
   };
 
   const leaveCommunity = async () => {

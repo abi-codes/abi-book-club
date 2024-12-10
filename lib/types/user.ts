@@ -30,6 +30,16 @@ export type IUser = {
   status?: string;
 };
 
+export type IFollowUser = {
+  _id: string;
+  id: string;
+  bio: string;
+  name: string;
+  surname: string;
+  username: string;
+  image: string;
+};
+
 export type IClubUser = {
   _id: string;
   id: string;

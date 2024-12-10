@@ -34,14 +34,15 @@ async function Page({ params }: { params: { id: string } }) {
     <section>
       {isOwner ? (
         <OwnedProfile
-          id={params.id}
+          id={user.id}
           isFollowing={isFollowing}
           userInfo={JSON.parse(JSON.stringify(fetchUserResponse.user))}
           isOwner={isOwner}
         />
       ) : (
         <Profile
-          id={params.id}
+          currentUserId={user.id}
+          id={user.id}
           isFollowing={isFollowing}
           userInfo={JSON.parse(JSON.stringify(fetchUserResponse.user))}
           isOwner={isOwner}

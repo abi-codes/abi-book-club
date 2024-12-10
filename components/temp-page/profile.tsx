@@ -6,23 +6,31 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { profileTabs } from "@/constants";
 import Image from "next/image";
 import EntriesTab from "@/components/shared/EntriesTab";
-
 import Bookshelf from "@/components/shared/Bookshelf";
 import UserCard from "@/components/cards/UserCard";
-import ProfileTopbar from "@/components/shared/ProfileTopbar";
 import { IUser } from "@/lib/types/user";
 
 interface Props {
+  currentUserId: string;
   id: string;
   userInfo: IUser;
   isOwner: boolean;
   isFollowing: boolean;
 }
-async function Profile({ id, userInfo, isOwner, isFollowing }: Props) {
+async function Profile({
+  id,
+  currentUserId,
+  userInfo,
+  isOwner,
+  isFollowing,
+}: Props) {
   return (
     <div className="flex-1">
       <ProfileHeader
-        accountId={userInfo.id || ""}
+        accountId={currentUserId}
+        // authUserId={userInfo.id}
+        //name={userInfo.name}
+        //accountId={userInfo.id || ""}
         authUserId={id}
         name={userInfo.name || ""}
         surname={userInfo.surname}

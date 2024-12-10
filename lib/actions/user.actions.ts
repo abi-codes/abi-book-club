@@ -12,7 +12,7 @@ import Address from "../models/address.model";
 import Bookshelf from "../models/bookshelf.model";
 import Book from "../models/book.model";
 import BookReview from "../models/bookReview.model";
-import { IUser } from "../types/user";
+import { IFollowUser, IUser } from "../types/user";
 import { IBookshelf } from "../types/bookshelf";
 import BomQueue from "../models/bomQueue.model";
 import BookSession from "../models/bookSession.model";
@@ -766,10 +766,19 @@ export async function followUser(
     const user = await User.findOne({ id: userId });
     const userToFollow = await User.findOne({ id: userToFollowId });
 
-    user.following.push(userToFollow._id);
-    userToFollow.followers.push(user._id);
+    if (userToFollow.status !== "active") {
+      throw new Error("User is not active");
+    }
 
-    await user.save();
+    if (userToFollow.visibility) {
+      userToFollow.followRequests.push(user._id);
+    } else {
+      user.following.push(userToFollow._id);
+      userToFollow.followers.push(user._id);
+
+      await user.save();
+    }
+
     await userToFollow.save();
 
     revalidatePath(path);
@@ -799,5 +808,131 @@ export async function unfollowUser(
     revalidatePath(path);
   } catch (error: any) {
     throw new Error(`Failed to unfollow user: ${error.message}`);
+  }
+}
+
+export async function fetchUserFollowRequests({
+  userId,
+  pageNumber = 1,
+  pageSize = 10,
+  sortBy = "desc",
+}: {
+  userId: string;
+  pageNumber?: number;
+  pageSize?: number;
+  sortBy?: SortOrder;
+}) {
+  try {
+    connectToDB();
+
+    const skipAmount = (pageNumber - 1) * pageSize;
+
+    const sortOptions = { createdDate: sortBy };
+
+    // const query: FilterQuery<typeof Community> = {
+    //   createdBy: { $eq: userId }, // Exclude the current user from the results.
+    // };
+
+    const userQueryResponse = await User.findOne({ _id: userId })
+      .sort(sortOptions)
+      .populate({
+        path: "followRequests",
+        model: User,
+        select: "name surname username bio image _id id",
+        options: {
+          skip: skipAmount,
+          limit: pageSize,
+          sort: sortOptions,
+        },
+      });
+    // .populate({
+    //   path: "members",
+    //   model: User,
+    //   select: "name surname username bio image _id id",
+    // });
+    // .populate("requests");
+    const paginatedFollowers = <IFollowUser[]>userQueryResponse.followRequests;
+
+    // const returnResponse = <IClubUser[]>communities
+    //   .map((c) => {
+    //     const requests = c?.requests.map((user: any) => ({
+    //       ...user._doc,
+    //       _clubId: c._id,
+    //       clubId: c.id,
+    //       clubName: c.name,
+    //       clubImage: c.image,
+    //       type: "request",
+    //     }));
+    //     const members = c?.members
+    //       .filter((user: any) => user._id != userId)
+    //       .map((user: any) => ({
+    //         ...user._doc,
+    //         _clubId: c._id,
+    //         clubId: c.id,
+    //         clubName: c.name,
+    //         clubImage: c.image,
+    //         type: "member",
+    //       }));
+    //     return requests?.concat(members);
+    //   })
+    //   .flat();
+
+    const totalUserItemsCount = await User.findOne({ _id: userId });
+
+    const totalPages = Math.ceil(
+      totalUserItemsCount.followRequests.length / pageSize
+    );
+    const isNext = pageNumber < totalPages;
+
+    return {
+      users: JSON.parse(JSON.stringify(paginatedFollowers)),
+      pageSize: pageSize,
+      hasNext: isNext,
+      totalPages: totalPages,
+      currentPage: pageNumber,
+    };
+  } catch (error) {
+    console.error("Error fetching user communities:", error);
+    throw error;
+  }
+}
+
+export async function declineFollowRequest(
+  userId: string,
+  userToDeclineId: string
+) {
+  try {
+    connectToDB();
+    const user = await User.findOne({ _id: userId });
+
+    user.followRequests.pull(userToDeclineId);
+
+    await user.save();
+  } catch (error) {
+    console.error("Error fetching user communities:", error);
+    throw error;
+  }
+}
+
+export async function appproveFollowRequest(
+  userId: string,
+  userToApproveId: string
+) {
+  try {
+    connectToDB();
+
+    const user = await User.findOne({ _id: userId });
+    const userToApprove = await User.findOne({ _id: userToApproveId });
+
+    user.followRequests.pull(userToApproveId);
+
+    user.followers.push(userToApproveId);
+    userToApprove.following.push(userId);
+
+    await user.save();
+    await userToApprove.save();
+  } catch (error) {
+    console.error("Error fetching user communities:", error);
+    throw error;
   }
 }

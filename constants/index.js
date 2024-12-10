@@ -90,6 +90,12 @@ export const profileTopbarLinks = [
     route: "/general",
     label: "Clubs",
   },
+  {
+    imgURL: "/assets/members.svg",
+    dimgURL: "/assets/general-w.svg",
+    route: "/followers",
+    label: "Followers",
+  },
 ];
 
 export const communityTabs = [
