@@ -71,6 +71,8 @@ const BasicDetails = ({ user }: Props) => {
       //email: values.email,
       image: values.image,
     });
+
+    setIsLoading(false);
   };
 
   const handleImage = (
