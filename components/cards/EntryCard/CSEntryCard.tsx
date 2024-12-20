@@ -144,9 +144,9 @@ const CSEntryCard = ({
         isComment ? "px-0 xs:px-7" : " bg-white dark:bg-dark-2 p-2"
       } `}
     >
-      <div className="flex w-full flex-1 flex-row gap-4 p-4">
+      <div className="flex w-full flex-1 flex-row gap-4 ">
         <div className="flex w-full flex-col">
-          <div className="flex flex-row gap-3 mb-3">
+          <div className="flex flex-row gap-3 mb-3 items-center">
             <Link
               href={`/profile/${author.id}`}
               className="flex items-center rounded-full relative h-6 w-6 overflow-hidden cursor-pointer"
@@ -164,7 +164,7 @@ const CSEntryCard = ({
                 {author.name}
               </h4>
             </Link>
-            <p className="meta-info !text-small-regular">
+            <p className="meta-info !text-small-regular text-center">
               {timeDifferenceForDate(new Date(createdAt))} ago
             </p>
             <div className="absolute right-10">
