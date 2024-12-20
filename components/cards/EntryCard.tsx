@@ -9,18 +9,6 @@ import { usePathname, useRouter } from "next/navigation";
 import "./EntryCard.css";
 
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "../ui/alert-dialog";
-
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -150,9 +138,10 @@ const EntryCard = ({
                 {author.name}
               </h4>
             </Link>
-            <p className=" meta-info !text-small-regular">
+            <div className="h-2 w-2 rounded-full bg-gray-500"></div>
+            <span className="meta-info !text-small-regular">
               {timeDifferenceForDate(new Date(createdAt))} ago
-            </p>
+            </span>
 
             <div className="absolute right-10">
               <DropdownMenu>

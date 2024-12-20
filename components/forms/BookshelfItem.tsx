@@ -116,6 +116,7 @@ const BookshelfItem = ({ shelfItem, userId, open, handleClose }: Props) => {
           <BookshelfBook
             book={bookshelfItem?.book}
             onSubmit={handleBookSelection}
+            back={handleClose}
           />
         )}
         {step === 2 && (

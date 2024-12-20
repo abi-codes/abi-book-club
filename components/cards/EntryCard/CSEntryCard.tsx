@@ -146,7 +146,7 @@ const CSEntryCard = ({
     >
       <div className="flex w-full flex-1 flex-row gap-4 p-4">
         <div className="flex w-full flex-col">
-          <div className="flex flex-row gap-3 mb-3">
+          <div className="flex flex-row items-center gap-3 mb-3">
             <Link
               href={`/profile/${author.id}`}
               className="flex items-center rounded-full relative h-6 w-6 overflow-hidden cursor-pointer"
@@ -164,9 +164,10 @@ const CSEntryCard = ({
                 {author.name}
               </h4>
             </Link>
-            <p className="meta-info !text-small-regular">
+            <div className="h-1 w-1 rounded-full bg-gray-500"></div>
+            <span className="meta-info !text-small-regular">
               {timeDifferenceForDate(new Date(createdAt))} ago
-            </p>
+            </span>
             <div className="absolute right-10">
               <DropdownMenu>
                 <DropdownMenuTrigger>

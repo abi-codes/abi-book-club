@@ -140,9 +140,10 @@ const EntryCard = ({
               </h4>
             </Link>
           </div>
-          <p className="meta-info !text-small-regular">
+          <div className="h-2 w-2 rounded-full bg-gray-500"></div>
+          <span className="meta-info !text-small-regular">
             {timeDifferenceForDate(new Date(createdAt))} ago
-          </p>
+          </span>
           <div
             className={`${
               isComment && "mb-5"
